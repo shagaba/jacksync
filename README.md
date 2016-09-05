@@ -1,11 +1,11 @@
 # jackson-patch-sync
 
-Enables efficient communication and data synchronization between clients and and a server (or any set of nodes that share a resource). 
-
 **Creating and applying patches**
 
-This project provides a library for producing and applying patches to Java objects. 
+The project provides a library for producing and applying patches to Java objects. 
 Inspired by RFC 6902 (JSON Patch) and RFC 7386 (JSON Merge Patch) written in Java, which uses Jackson at its core.
+
+The project can enable an efficient communication and data synchronization between clients and servers (or any set of nodes that share a resource). 
 
 **Operations Inspired by RFC 6902 (JSON Patch) :**
 
