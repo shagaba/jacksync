@@ -137,7 +137,7 @@ public class AddOperationTest {
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
         Section section5 = new Section("section-5", null);
-        AddOperation addOperation = new AddOperation("/sections/3", mapper.valueToTree(section5));
+        AddOperation addOperation = new AddOperation("/sections/4", mapper.valueToTree(section5));
         String addValueJson = mapper.writeValueAsString(addOperation);
 
         // read action
@@ -146,7 +146,7 @@ public class AddOperationTest {
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(5));
-        Assert.assertThat(postV2.getSections().get(3), equalTo(section5));
+        Assert.assertThat(postV2.getSections().get(4), equalTo(section5));
     }
 
 }
