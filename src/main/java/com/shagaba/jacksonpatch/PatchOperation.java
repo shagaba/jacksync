@@ -13,13 +13,18 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "op")
-@JsonSubTypes({ @JsonSubTypes.Type(value = AddOperation.class, name = "add"), })
+@JsonSubTypes({ 
+	@JsonSubTypes.Type(value = AddOperation.class, name = "add"),
+	@JsonSubTypes.Type(value = RemoveOperation.class, name = "remove"),
+	@JsonSubTypes.Type(value = ReplaceOperation.class, name = "replace")}
+)
 public abstract class PatchOperation {
 
 	/**
 	 * Apply this operation to a JsonNode object
 	 * 
-	 * @param objectJsonNode the JsonNode object to patch
+	 * @param objectJsonNode
+	 *            the JsonNode object to patch
 	 * @return the JsonNode object patched value
 	 */
 	public abstract JsonNode apply(JsonNode objectJsonNode);
