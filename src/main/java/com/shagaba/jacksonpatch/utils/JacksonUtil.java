@@ -95,7 +95,7 @@ public class JacksonUtil {
 		String basePath = JsonPathUtil.getBaseName(path);
 		try {
 			int index = Integer.parseInt(basePath);
-			if (index < 0 || index >= arrayNode.size()) {
+			if (index < 0 || index > arrayNode.size()) {
 				throw new NoSuchPathException(String.format("No such path index - %s", index));
 			}
 			return index;
