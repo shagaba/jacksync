@@ -10,20 +10,6 @@ public abstract class PatchPathOperation extends PatchOperation {
 	
     private String path;
 
-    /**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @param path the path to set
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 	/**
 	 * 
 	 */
@@ -36,6 +22,20 @@ public abstract class PatchPathOperation extends PatchOperation {
 	 */
 	public PatchPathOperation(String path) {
 		super();
+		this.path = path;
+	}
+
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * @param path the path to set
+	 */
+	public void setPath(String path) {
 		this.path = path;
 	}
 

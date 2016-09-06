@@ -14,7 +14,7 @@ import com.shagaba.jacksonpatch.utils.JsonPathUtil;
  * The target location MUST exist for the operation to be successful.
  * 
  * If removing an element from an array, any elements above the specified index
- * are shifted one position to the left. For example:
+ * are shifted one position to the left.
  * 
  * Example:
  * 
