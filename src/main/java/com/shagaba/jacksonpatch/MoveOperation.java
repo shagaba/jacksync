@@ -1,6 +1,7 @@
 package com.shagaba.jacksonpatch;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.shagaba.jacksonpatch.utils.JacksonUtil;
 
 /**
  * This is an implementation of RFC 6902 (JSON Patch) - "move" operation.
@@ -50,8 +51,10 @@ public class MoveOperation extends PatchDualPathOperation {
 
 	@Override
 	public JsonNode apply(JsonNode objectJsonNode) {
-        CopyOperation copyOperation = new CopyOperation(getFrom(), getPath());
+		JsonNode pathJsonNode = JacksonUtil.path(objectJsonNode, getFrom());
+		JsonNode copiedValue = pathJsonNode.deepCopy();
         RemoveOperation removeOperation = new RemoveOperation(getFrom());
-        return removeOperation.apply(copyOperation.apply(objectJsonNode));
+		AddOperation addOperation = new AddOperation(getPath(), copiedValue);
+        return addOperation.apply(removeOperation.apply(objectJsonNode));
       }
 }
