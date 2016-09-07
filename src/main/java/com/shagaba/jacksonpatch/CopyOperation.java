@@ -1,10 +1,7 @@
 package com.shagaba.jacksonpatch;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.shagaba.jacksonpatch.utils.JacksonUtil;
-import com.shagaba.jacksonpatch.utils.JsonPathUtil;
 
 /**
  * This is an implementation of RFC 6902 (JSON Patch) - "copy" operation.
@@ -20,7 +17,6 @@ import com.shagaba.jacksonpatch.utils.JsonPathUtil;
  * 
  * This operation is functionally identical to an "add" operation at the target
  * location using the value specified in the "from" member.
- * 
  * 
  * Example:
  * 
@@ -51,17 +47,8 @@ public class CopyOperation extends PatchDualPathOperation {
 
 	@Override
 	public JsonNode apply(JsonNode objectJsonNode) {
-		JsonNode pathJsonNode = JacksonUtil.parentPathContainer(objectJsonNode, getFrom());
-		JsonNode copiedValue = null;
-		if (pathJsonNode.isArray()) {
-			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-			int index = JacksonUtil.getArrayNodePathIndex(pathArrayNode, getFrom());
-			copiedValue = pathArrayNode.get(index).deepCopy();
-
-		} else {
-			ObjectNode pathObjectNode = (ObjectNode) pathJsonNode;
-			copiedValue = pathObjectNode.get(JsonPathUtil.getBaseName(getFrom())).deepCopy();
-		}
+		JsonNode pathJsonNode = JacksonUtil.path(objectJsonNode, getFrom());
+		JsonNode copiedValue = pathJsonNode.deepCopy();
 		AddOperation addOperation = new AddOperation(getPath(), copiedValue);
 		return addOperation.apply(objectJsonNode);
 	}

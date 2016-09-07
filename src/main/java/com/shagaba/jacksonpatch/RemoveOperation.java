@@ -48,7 +48,7 @@ public class RemoveOperation extends PatchPathOperation {
 		JsonNode pathJsonNode = JacksonUtil.parentPathContainer(objectJsonNode, getPath());
 		if (pathJsonNode.isArray()) {
 			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-			int index = JacksonUtil.getArrayNodePathIndex(pathArrayNode, getPath());
+			int index = JacksonUtil.parseBasePathIndex(pathArrayNode, getPath());
 			pathArrayNode.remove(index);
 
 		} else {

@@ -21,7 +21,7 @@ public class JacksonUtil {
 	/**
 	 * Checks if an input string is in valid JSON format
 	 * 
-	 * @param json input json string to validate
+	 * @param json input JSON string to validate
 	 * @return true if the input string is in valid JSON format
 	 */
 	public static boolean isValidJson(String json) {
@@ -51,36 +51,48 @@ public class JacksonUtil {
 	}
 
     /**
-     * Locating the parent JsonNode container specified by given JSON path in the given objectJsonNode.
+     * Locating the parent JsonNode container specified by given JSON path in the given sourceJsonNode.
      *
-     * @param objectJsonNode a jackson JsonNode of an object
+     * @param sourceJsonNode a jackson JsonNode of an object
      * @param path the path to process
 	 * @return the parent JsonNode
 	 */
-	public static JsonNode parentPathContainer(JsonNode objectJsonNode, String path) {
+	public static JsonNode parentPathContainer(JsonNode sourceJsonNode, String path) {
 		String parentPath = JsonPathUtil.getParent(path);
-		return pathContainer(objectJsonNode, parentPath);
+		return pathContainer(sourceJsonNode, parentPath);
 	}
 
     /**
-     * Locating a JsonNode container specified by given JSON path in the given objectJsonNode.
+     * Locating a JsonNode container specified by given JSON path in the given sourceJsonNode.
      *
-     * @param objectJsonNode a jackson JsonNode of an object
+     * @param sourceJsonNode a jackson JsonNode of an object
      * @param path the path to process
 	 * @return the JsonNode
 	 */
-	public static JsonNode pathContainer(JsonNode objectJsonNode, String path) {
-		JsonNode pathJsonNode = objectJsonNode;
+	public static JsonNode pathContainer(JsonNode sourceJsonNode, String path) {
+		JsonNode pathJsonNode = path(sourceJsonNode, path);
+		if (!pathJsonNode.isContainerNode()) {
+			throw new IllegalContainerException(String.format("Path is not a container - %s", path));
+		}
+		return pathJsonNode;
+	}
+
+
+    /**
+     * Locating a JsonNode specified by given JSON path in the given sourceJsonNode.
+     *
+     * @param sourceJsonNode a jackson JsonNode of an object
+     * @param path the path to process
+	 * @return the JsonNode
+	 */
+	public static JsonNode path(JsonNode sourceJsonNode, String path) {
+		JsonNode pathJsonNode = sourceJsonNode;
 		if (!JsonPathUtil.isRoot(path)) {
 			JsonPointer pathPointer = JsonPointer.valueOf(path);
-			pathJsonNode = objectJsonNode.at(pathPointer);
+			pathJsonNode = sourceJsonNode.at(pathPointer);
 		}
-
 		if (pathJsonNode.isMissingNode()) {
-			throw new NoSuchPathException("No such path");
-		}
-		if (!pathJsonNode.isContainerNode()) {
-			throw new IllegalContainerException("Path is not a container");
+			throw new NoSuchPathException(String.format("No such path - %s", path));
 		}
 		return pathJsonNode;
 	}
@@ -91,14 +103,23 @@ public class JacksonUtil {
 	 * @param path
 	 * @return
 	 */
-	public static int getArrayNodePathIndex(ArrayNode arrayNode, String path) {
+	public static int parseBasePathIndex(ArrayNode arrayNode, String path) {
+		int index = parseBasePath(path);
+		if (index < 0 || index > arrayNode.size()) {
+			throw new NoSuchPathException(String.format("No such path index - %s", index));
+		}
+		return index;
+	}
+
+	/**
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public static int parseBasePath(String path) {
 		String basePath = JsonPathUtil.getBaseName(path);
 		try {
-			int index = Integer.parseInt(basePath);
-			if (index < 0 || index > arrayNode.size()) {
-				throw new NoSuchPathException(String.format("No such path index - %s", index));
-			}
-			return index;
+			return Integer.parseInt(basePath);
 		} catch (NumberFormatException exception) {
 			throw new NoSuchPathException(String.format("Path is not an index path - %s", path));
 		}

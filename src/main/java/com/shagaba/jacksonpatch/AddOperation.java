@@ -92,7 +92,7 @@ public class AddOperation extends PatchPathOperation {
 		JsonNode pathJsonNode = JacksonUtil.parentPathContainer(objectJsonNode, getPath());
 		if (pathJsonNode.isArray()) {
 			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-			int index = JacksonUtil.getArrayNodePathIndex(pathArrayNode, getPath());
+			int index = JacksonUtil.parseBasePathIndex(pathArrayNode, getPath());
 			if (index == pathArrayNode.size()) {
 				pathArrayNode.add(value);
 			} else {

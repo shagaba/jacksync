@@ -7,10 +7,32 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.shagaba.jacksonpatch.utils.JacksonUtil;
 import com.shagaba.jacksonpatch.utils.JsonPathUtil;
 
+/**
+ * This is an implementation of RFC 6902 (JSON Patch) - "replace" operation.
+ * 
+ * The "replace" operation replaces the value at the target location with a new
+ * value. The operation object MUST contain a "value" member whose content
+ * specifies the replacement value.
+ * 
+ * The target location MUST exist for the operation to be successful.
+ * 
+ * This operation is functionally identical to a "remove" operation for a value,
+ * followed immediately by an "add" operation at the same location with the
+ * replacement value.
+ * 
+ * Example:
+ * 
+ * 1. A JSON Patch document:
+ * 
+ * { "op": "replace", "path": "/a/b/c", "value": 42 }.
+ * 
+ * @author Shagaba
+ *
+ */
 public class ReplaceOperation extends PatchPathOperation {
 
 	@JsonSerialize
-    private JsonNode value;
+	private JsonNode value;
 
 	/**
 	 * 
@@ -47,15 +69,15 @@ public class ReplaceOperation extends PatchPathOperation {
 	@Override
 	public JsonNode apply(JsonNode objectJsonNode) {
 		JsonNode pathJsonNode = JacksonUtil.parentPathContainer(objectJsonNode, getPath());
-        if (pathJsonNode.isArray()) {
-        	ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-            int index = JacksonUtil.getArrayNodePathIndex(pathArrayNode, getPath());
-            pathArrayNode.set(index, value);
+		if (pathJsonNode.isArray()) {
+			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
+			int index = JacksonUtil.parseBasePathIndex(pathArrayNode, getPath());
+			pathArrayNode.set(index, value);
 
-        } else {
-        	ObjectNode pathObjectNode = (ObjectNode) pathJsonNode;
-        	pathObjectNode.replace(JsonPathUtil.getBaseName(getPath()), value);
-        }
-        return objectJsonNode;
-      }
+		} else {
+			ObjectNode pathObjectNode = (ObjectNode) pathJsonNode;
+			pathObjectNode.replace(JsonPathUtil.getBaseName(getPath()), value);
+		}
+		return objectJsonNode;
+	}
 }
