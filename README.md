@@ -26,7 +26,10 @@ The "remove" operation removes the value at the target location.
 The target location MUST exist for the operation to be successful.
 If removing an element from an array, any elements above the specified index are shifted one position to the left.
 ```json
-{ "op" : "remove", "path" : "/author/email" }
+{
+	"op" : "remove",
+	"path" : "/author/email" 
+}
 ```
 
 **Replace**
@@ -36,7 +39,14 @@ The operation object MUST contain a "value" member whose content specifies the r
 The target location MUST exist for the operation to be successful.
 This operation is functionally identical to a "remove" operation for a value, followed immediately by an "add" operation at the same location with the replacement value.
 ```json
-{ "op" : "replace", "path" : "/sections/3/paragraphs/2", "value" : { "title" :  "Paragraph Title", "content" : "paragraph content" } }
+{ 
+	"op" : "replace", 
+	"path" : "/sections/3/paragraphs/2", 
+	"value" : { 
+		"title" :  "Paragraph Title", 
+		"content" : "paragraph content" 
+	} 
+}
 ```
 
 **Move**
@@ -47,7 +57,11 @@ The "from" location MUST exist for the operation to be successful.
 This operation is functionally identical to a "remove" operation on the "from" location, followed immediately by an "add" operation at the target location with the value that was just removed.
 The "from" location MUST NOT be a proper prefix of the "path" location, a location cannot be moved into one of its children.
 ```json
-{ "op" : "move", "from" : "/sections/3/paragraphs/2", "path" : "/sections/3/paragraphs/4" }
+{
+	"op" : "move", 
+	"from" : "/sections/3/paragraphs/2", 
+	"path" : "/sections/3/paragraphs/4" 
+}
 ```
 
 **Copy**
@@ -57,12 +71,28 @@ The operation object MUST contain a "from" member, which is a string containing 
 The "from" location MUST exist for the operation to be successful.
 This operation is functionally identical to an "add" operation at the target location using the value specified in the "from" member.
 ```json
-{ "op" : "copy", "from" : "/sections/3/paragraphs/2", "path" : "/sections/3/paragraphs/6" }
+{
+	"op" : "copy", 
+	"from" : "/sections/3/paragraphs/2", 
+	"path" : "/sections/3/paragraphs/6" 
+}
 ```
 **Test**
-
+The "test" operation tests that a value at the target location is equal to a specified value.
+The operation object MUST contain a "value" member that conveys the value to be compared to the target location's value.
+The target location MUST be equal to the "value" value for the operation to be considered successful.
+Here, "equal" means that the value at the target location and the value conveyed by "value" are of the same JSON type, and that they are considered equal by the following rules for that type:
+* strings: are considered equal if they contain the same number of Unicode characters and their code points are byte-by-byte equal.
+* numbers: are considered equal if their values are numerically equal.
+* arrays: are considered equal if they contain the same number of values, and if each value can be considered equal to the value at the corresponding position in the other array, using this list of type-specific rules.
+* objects: are considered equal if they contain the same number of members, and if each member can be considered equal to a member in the other object, by comparing their keys (as strings) and their values (using this list of type-specific rules).
+* literals (false, true, and null): are considered equal if they are the same.
 ```json
-{ "op" : "test", "path" : "/author/firstName", "value" : "James" }
+{
+	"op" : "test", 
+	"path" : "/author/firstName", 
+	"value" : "James" 
+}
 ```
 
 ##Operations Inspired by RFC 7386 (JSON Merge Patch) :
@@ -70,5 +100,13 @@ This operation is functionally identical to an "add" operation at the target loc
 **Merge**
 
 ```json
-{ "op": "merge", "value" : { "author" : { "firstName" : "James" , "lastName" : "Bond" } }
+{
+	"op": "merge", 
+	"value" : { 
+		"author" : { 
+			"firstName" : "James" , 
+			"lastName" : "Bond" 
+		} 
+	}
+}
 ```
