@@ -78,6 +78,7 @@ This operation is functionally identical to an "add" operation at the target loc
 }
 ```
 **Test**
+
 The "test" operation tests that a value at the target location is equal to a specified value.
 The operation object MUST contain a "value" member that conveys the value to be compared to the target location's value.
 The target location MUST be equal to the "value" value for the operation to be considered successful.
@@ -99,13 +100,19 @@ Here, "equal" means that the value at the target location and the value conveyed
 
 **Merge**
 
+A JSON merge patch document describes changes to be made to a target JSON document using a syntax that closely mimics the document being modified.
+* Recipients of a merge patch document determine the exact set of changes being requested by comparing the content of the provided patch against the current content of the target document.
+* If the provided merge patch contains members that do not appear within the target, those members are added.
+* If the target does contain the member, the value is replaced.
+* Null values in the merge patch are given special meaning to indicate the removal of existing values in the target.
 ```json
 {
 	"op": "merge", 
 	"value" : { 
+		"title" : null,
 		"author" : { 
 			"firstName" : "James" , 
-			"lastName" : "Bond" 
+			"lastName" : "Bond"
 		} 
 	}
 }

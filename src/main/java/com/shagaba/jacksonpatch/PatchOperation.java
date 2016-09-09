@@ -19,7 +19,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 	@JsonSubTypes.Type(value = ReplaceOperation.class, name = "replace"),
 	@JsonSubTypes.Type(value = CopyOperation.class, name = "copy"),
 	@JsonSubTypes.Type(value = MoveOperation.class, name = "move"),
-	@JsonSubTypes.Type(value = TestOperation.class, name = "test")}
+	@JsonSubTypes.Type(value = TestOperation.class, name = "test"),
+	@JsonSubTypes.Type(value = MergeOperation.class, name = "merge")}
 )
 public abstract class PatchOperation {
 
