@@ -1,11 +1,10 @@
 package com.shagaba.jacksonpatch;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.shagaba.jacksonpatch.utils.JacksonUtil;
-import com.shagaba.jacksonpatch.utils.JsonPathUtil;
 
 /**
  * This is an implementation of RFC 6902 (JSON Patch) - "replace" operation.
@@ -31,7 +30,6 @@ import com.shagaba.jacksonpatch.utils.JsonPathUtil;
  */
 public class ReplaceOperation extends PatchPathOperation {
 
-	@JsonSerialize
 	private JsonNode value;
 
 	/**
@@ -39,6 +37,17 @@ public class ReplaceOperation extends PatchPathOperation {
 	 */
 	public ReplaceOperation() {
 		super();
+	}
+
+	/**
+	 * Constructs the replace operation
+	 * 
+	 * @param path the path where the value will be replaced. ('/foo/bar/4')
+	 * @param value the value to replace.
+	 */
+	public ReplaceOperation(JsonPointer path, JsonNode value) {
+		super(path);
+		this.value = value;
 	}
 
 	/**
@@ -67,17 +76,17 @@ public class ReplaceOperation extends PatchPathOperation {
 	}
 
 	@Override
-	public JsonNode apply(JsonNode objectJsonNode) {
-		JsonNode pathJsonNode = JacksonUtil.parentPathContainer(objectJsonNode, getPath());
+	public JsonNode apply(JsonNode sourceJsonNode) {
+		JsonNode pathJsonNode = JacksonUtil.locateHeadContainer(sourceJsonNode, path);
 		if (pathJsonNode.isArray()) {
 			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-			int index = JacksonUtil.parseBasePathIndex(pathArrayNode, getPath());
+			int index = JacksonUtil.parseLastIndex(pathArrayNode, path);
 			pathArrayNode.set(index, value);
 
 		} else {
 			ObjectNode pathObjectNode = (ObjectNode) pathJsonNode;
-			pathObjectNode.replace(JsonPathUtil.getBaseName(getPath()), value);
+			pathObjectNode.replace(JacksonUtil.lastFieldName(path), value);
 		}
-		return objectJsonNode;
+		return sourceJsonNode;
 	}
 }

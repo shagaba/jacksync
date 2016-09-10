@@ -1,5 +1,7 @@
 package com.shagaba.jacksonpatch;
 
+import com.fasterxml.jackson.core.JsonPointer;
+
 /**
  * Base class for patch operations taking a path
  * 
@@ -8,7 +10,7 @@ package com.shagaba.jacksonpatch;
  */
 public abstract class PatchPathOperation extends PatchOperation {
 	
-    private String path;
+    protected JsonPointer path;
 
 	/**
 	 * 
@@ -20,23 +22,44 @@ public abstract class PatchPathOperation extends PatchOperation {
 	/**
 	 * @param path the path to perform the operation on. ('/1/description')
 	 */
-	public PatchPathOperation(String path) {
+	public PatchPathOperation(JsonPointer path) {
 		super();
 		this.path = path;
+	}
+
+	/**
+	 * @param path the path to perform the operation on. ('/1/description')
+	 */
+	public PatchPathOperation(String path) {
+		super();
+		setPath(path);
 	}
 
 	/**
 	 * @return the path
 	 */
 	public String getPath() {
-		return path;
+		return path.toString();
 	}
 
 	/**
 	 * @param path the path to set
 	 */
 	public void setPath(String path) {
-		this.path = path;
+		basicPathChecks(path);
+		this.path = JsonPointer.compile(path);
 	}
+
+    /**
+     * 
+     */
+    protected void basicPathChecks(String path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Path is null");
+        }
+        if (!path.equals(path.trim())) {
+            throw new IllegalArgumentException(String.format("Path has not been trimmed: '%s'", path));
+        }
+    }
 
 }

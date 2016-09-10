@@ -1,10 +1,10 @@
 package com.shagaba.jacksonpatch;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.shagaba.jacksonpatch.utils.JacksonUtil;
-import com.shagaba.jacksonpatch.utils.JsonPathUtil;
 
 /**
  * This is an implementation of RFC 6902 (JSON Patch) - "remove" operation.
@@ -39,23 +39,32 @@ public class RemoveOperation extends PatchPathOperation {
 	 * 
 	 * @param path the path where the value will be removed. ('/foo/bar/4')
 	 */
+	public RemoveOperation(JsonPointer path) {
+		super(path);
+	}
+
+	/**
+	 * Constructs the add operation
+	 * 
+	 * @param path the path where the value will be removed. ('/foo/bar/4')
+	 */
 	public RemoveOperation(String path) {
 		super(path);
 	}
 
 	@Override
-	public JsonNode apply(JsonNode objectJsonNode) {
-		JsonNode pathJsonNode = JacksonUtil.parentPathContainer(objectJsonNode, getPath());
+	public JsonNode apply(JsonNode sourceJsonNode) {
+		JsonNode pathJsonNode = JacksonUtil.locateHeadContainer(sourceJsonNode, path);
 		if (pathJsonNode.isArray()) {
 			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-			int index = JacksonUtil.parseBasePathIndex(pathArrayNode, getPath());
+			int index = JacksonUtil.parseLastIndex(pathArrayNode, path);
 			pathArrayNode.remove(index);
 
 		} else {
 			ObjectNode pathObjectNode = (ObjectNode) pathJsonNode;
-			pathObjectNode.remove(JsonPathUtil.getBaseName(getPath()));
+			pathObjectNode.remove(JacksonUtil.lastFieldName(path));
 		}
-		return objectJsonNode;
+		return sourceJsonNode;
 	}
 
 }

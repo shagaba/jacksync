@@ -27,10 +27,9 @@ public abstract class PatchOperation {
 	/**
 	 * Apply this operation to a JsonNode object
 	 * 
-	 * @param objectJsonNode
-	 *            the JsonNode object to patch
+	 * @param sourceJsonNode the JsonNode object to patch
 	 * @return the JsonNode object patched value
 	 */
-	public abstract JsonNode apply(JsonNode objectJsonNode);
+	public abstract JsonNode apply(JsonNode sourceJsonNode);
 
 }

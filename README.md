@@ -17,7 +17,11 @@ The "add" operation performs one of the following functions, depending upon what
 * If the target location specifies an object member that does exist, that member's value is replaced.
 The operation object MUST contain a "value" member whose content specifies the value to be added.
 ```json
-{ "op" : "add", "path" : "/author/firstName", "value" : "James" }
+{
+	"op" : "add", 
+	"path" : "/author/firstName", 
+	"value" : "James" 
+}
 ```
 
 **Remove**

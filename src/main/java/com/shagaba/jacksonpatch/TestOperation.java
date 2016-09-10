@@ -2,8 +2,8 @@ package com.shagaba.jacksonpatch;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.shagaba.jacksonpatch.exception.InvalidPatchValueTestException;
 import com.shagaba.jacksonpatch.utils.JacksonUtil;
 
@@ -51,8 +51,6 @@ import com.shagaba.jacksonpatch.utils.JacksonUtil;
  *
  */public class TestOperation extends PatchPathOperation {
 
-	
-	@JsonSerialize
     private JsonNode value;
 
 	/**
@@ -60,6 +58,17 @@ import com.shagaba.jacksonpatch.utils.JacksonUtil;
 	 */
 	public TestOperation() {
 		super();
+	}
+
+	/**
+	 * Constructs the test operation
+	 * 
+	 * @param path the path where the value will be tested. ('/foo/bar/4')
+	 * @param value the value to test.
+	 */
+	public TestOperation(JsonPointer path, JsonNode value) {
+		super(path);
+		this.value = value;
 	}
 
 	/**
@@ -88,12 +97,11 @@ import com.shagaba.jacksonpatch.utils.JacksonUtil;
 	}
 
 	@Override
-	public JsonNode apply(JsonNode objectJsonNode) {
-		JsonNode pathJsonNode = JacksonUtil.path(objectJsonNode, getPath());
-        
+	public JsonNode apply(JsonNode sourceJsonNode) {
+		JsonNode pathJsonNode = JacksonUtil.locate(sourceJsonNode, path);
         if (!Objects.equals(pathJsonNode, value)) {
         	throw new InvalidPatchValueTestException(String.format("Value test failure - Expected: %s, but: was %s", value, pathJsonNode));
         }
-        return objectJsonNode;
+        return sourceJsonNode;
       }
 }

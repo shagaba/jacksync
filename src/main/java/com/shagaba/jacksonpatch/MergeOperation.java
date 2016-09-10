@@ -4,12 +4,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class MergeOperation extends PatchOperation {
 
-	@JsonSerialize
     private JsonNode value;
     
     /**

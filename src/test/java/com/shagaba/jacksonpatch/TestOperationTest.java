@@ -3,6 +3,7 @@ package com.shagaba.jacksonpatch;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,7 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.collect.Lists;
 import com.shagaba.jacksonpatch.exception.InvalidPatchValueTestException;
 import com.shagaba.jacksonpatch.post.dto.Post;
 import com.shagaba.jacksonpatch.post.dto.Section;
@@ -87,7 +87,7 @@ public class TestOperationTest {
     public void testTags() throws Exception {
     	String testMe = "please test me";
     	Post postV1 = new Post();
-    	postV1.setTags(Lists.newArrayList("tag1", "tag2", testMe, "tag3"));
+    	postV1.setTags(Arrays.asList("tag1", "tag2", testMe, "tag3"));
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
         TestOperation testOperation = new TestOperation("/tags/2", mapper.valueToTree(testMe));
@@ -105,7 +105,7 @@ public class TestOperationTest {
     public void testInvalidTag() throws Exception {
     	String testMe = "please test me";
     	Post postV1 = new Post();
-    	postV1.setTags(Lists.newArrayList("tag1", "tag2", testMe + ", im different", "tag3"));
+    	postV1.setTags(Arrays.asList("tag1", "tag2", testMe + ", im different", "tag3"));
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
         TestOperation testOperation = new TestOperation("/tags/2", mapper.valueToTree(testMe));

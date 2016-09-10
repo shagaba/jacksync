@@ -3,6 +3,7 @@ package com.shagaba.jacksonpatch;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,7 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.collect.Lists;
 import com.shagaba.jacksonpatch.post.dto.Author;
 import com.shagaba.jacksonpatch.post.dto.Post;
 import com.shagaba.jacksonpatch.post.dto.Section;
@@ -77,8 +77,8 @@ public class CopyOperationTest {
     public void copyFromTagToCategory() throws Exception {
     	String copyMe = "please copy me";
     	Post postV1 = new Post();
-    	postV1.setTags(Lists.newArrayList("tag1", "tag2", copyMe, "tag3"));
-    	postV1.setCategories(Lists.newArrayList());
+    	postV1.setTags(Arrays.asList("tag1", "tag2", copyMe, "tag3"));
+    	postV1.setCategories(Arrays.asList());
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
         CopyOperation copyOperation = new CopyOperation("/tags/2", "/categories/0");

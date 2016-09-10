@@ -1,5 +1,6 @@
 package com.shagaba.jacksonpatch;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.shagaba.jacksonpatch.utils.JacksonUtil;
 
@@ -41,15 +42,24 @@ public class CopyOperation extends PatchDualPathOperation {
 	 * @param from the source path to perform the move operation from. ('/1/description')
 	 * @param path the destination path to perform the move operation on. ('/2/description')
 	 */
+	public CopyOperation(JsonPointer from, JsonPointer path) {
+		super(from, path);
+	}
+
+	/**
+	 * 
+	 * @param from the source path to perform the move operation from. ('/1/description')
+	 * @param path the destination path to perform the move operation on. ('/2/description')
+	 */
 	public CopyOperation(String from, String path) {
 		super(from, path);
 	}
 
 	@Override
-	public JsonNode apply(JsonNode objectJsonNode) {
-		JsonNode pathJsonNode = JacksonUtil.path(objectJsonNode, getFrom());
+	public JsonNode apply(JsonNode sourceJsonNode) {
+		JsonNode pathJsonNode = JacksonUtil.locate(sourceJsonNode, from);
 		JsonNode copiedValue = pathJsonNode.deepCopy();
-		AddOperation addOperation = new AddOperation(getPath(), copiedValue);
-		return addOperation.apply(objectJsonNode);
+		AddOperation addOperation = new AddOperation(path, copiedValue);
+		return addOperation.apply(sourceJsonNode);
 	}
 }

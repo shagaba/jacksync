@@ -3,7 +3,6 @@ package com.shagaba.jacksonpatch;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -185,25 +184,4 @@ public class MergeOperationTest {
         Assert.assertThat(postV2.getSections().size(), equalTo(5));
         Assert.assertThat(postV2.getSections().get(4), equalTo(section5));
     }
-
-    @Test
-    public void amergeComplex() throws Exception {
-    	Post postV1 = new Post();
-    	postV1.setTitle("1st title ");
-    	postV1.setVersion(1L);
-    	postV1.setTags(Arrays.asList("a", "b"));
-        JsonNode postV1Node = mapper.valueToTree(postV1);
-
-        MergeOperation mergeOperation = new MergeOperation(mapper.readTree("{\"author\":{\"firstName\":\"james\"}, \"title\":\"2nd title\", \"tags\":[\"c\",\"d\"]}"));
-        String mergeValueJson = mapper.writeValueAsString(mergeOperation);
-
-        // read action
-        PatchOperation action = mapper.readValue(mergeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
-        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
-        
-//        Assert.assertThat(postV2.getTitle(), equalTo(title));
-    }
-
-
 }

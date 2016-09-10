@@ -13,8 +13,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.shagaba.jacksonpatch.AddOperation;
-import com.shagaba.jacksonpatch.PatchOperation;
 import com.shagaba.jacksonpatch.post.dto.Author;
 import com.shagaba.jacksonpatch.post.dto.Post;
 import com.shagaba.jacksonpatch.post.dto.Section;
