@@ -10,6 +10,25 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 * allows you to update a JSON document by sending the changes rather than the whole document.
 * enables simple commit and audit all JSON Patch changes in your data, and later on browse the detailed change history.
 
+### Sync Capsule Structure
+* version - client received version.
+* approvedVersion - server version after committing all patch operations.
+* targetChecksum - target object after applying all patch operations.
+* operations - all patch operations.
+
+```json
+{
+	"version" : "5",
+	"approvedVersion" : null,
+	"targetChecksum" : "Checksum",
+	"operations" : [
+		{ "op" : "replace", "path" : "/title", "value" : "How To Use Sync Capsule" },
+		{ "op" : "add", "path" : "/author", "value" : "shagaba" },
+		{ "op" : "add", "path" : "/tags/3", "value" : "sync" }
+	]
+}
+```
+
 ##Operations Inspired by RFC 6902 (JSON Patch) :
 
 **Add**
