@@ -5,7 +5,10 @@
 The project provides a library for producing and applying patches to Java objects. 
 Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) written in Java, which uses Jackson at its core.
 
-The project can enable an efficient communication and data synchronization between clients and servers (or any set of nodes that share a resource). 
+###Features overview
+* enables an efficient data synchronization between clients and servers (or any set of nodes that share a resource).
+* allows you to update a JSON document by sending the changes rather than the whole document.
+* enables simple commit and audit all JSON Patch changes in your data, and later on browse the detailed change history.
 
 ##Operations Inspired by RFC 6902 (JSON Patch) :
 
