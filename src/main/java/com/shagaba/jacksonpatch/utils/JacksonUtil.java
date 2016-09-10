@@ -16,8 +16,36 @@ import com.shagaba.jacksonpatch.exception.NoSuchPathException;
  */
 public class JacksonUtil {
 
+    public static final String SEPARATOR = "/";
+
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    /**
+     * Checks if a path is a root path.
+     * 
+     * @param jsonPointer the path to check
+     * @return true if the path is a root path, false otherwise
+     */
+    public static boolean isRoot(JsonPointer jsonPointer) {
+    	try {
+    		return jsonPointer.head() == null;
+    	} catch (Exception e) {
+    		return false;
+    	}
+    }
+    
+    /**
+     * Returns the base name of the path.
+     *
+     * @param path the path to process
+     * @return The base name of the path.
+     */
+    public static String lastFieldName(JsonPointer jsonPointer) {
+    	String lastPath = jsonPointer.last().toString();
+    	// remove path separator "/" and return a clean field name
+    	return lastPath.substring(1);
+    }
+    
 	/**
 	 * Checks if an input string is in valid JSON format
 	 * 
@@ -51,15 +79,14 @@ public class JacksonUtil {
 	}
 
     /**
-     * Locating the parent JsonNode container specified by given JSON path in the given sourceJsonNode.
+     * Locating the head (parent) JsonNode container specified by given JSON path in the given sourceJsonNode.
      *
      * @param sourceJsonNode a jackson JsonNode of an object
      * @param path the path to process
-	 * @return the parent JsonNode
+	 * @return the head (parent) JsonNode container
 	 */
-	public static JsonNode parentPathContainer(JsonNode sourceJsonNode, String path) {
-		String parentPath = JsonPathUtil.getParent(path);
-		return pathContainer(sourceJsonNode, parentPath);
+	public static JsonNode locateHeadContainer(JsonNode sourceJsonNode, JsonPointer path) {
+		return locateContainer(sourceJsonNode, path.head());
 	}
 
     /**
@@ -69,14 +96,13 @@ public class JacksonUtil {
      * @param path the path to process
 	 * @return the JsonNode
 	 */
-	public static JsonNode pathContainer(JsonNode sourceJsonNode, String path) {
-		JsonNode pathJsonNode = path(sourceJsonNode, path);
+	public static JsonNode locateContainer(JsonNode sourceJsonNode, JsonPointer path) {
+		JsonNode pathJsonNode = locate(sourceJsonNode, path);
 		if (!pathJsonNode.isContainerNode()) {
 			throw new IllegalContainerException(String.format("Path is not a container - %s", path));
 		}
 		return pathJsonNode;
 	}
-
 
     /**
      * Locating a JsonNode specified by given JSON path in the given sourceJsonNode.
@@ -85,11 +111,10 @@ public class JacksonUtil {
      * @param path the path to process
 	 * @return the JsonNode
 	 */
-	public static JsonNode path(JsonNode sourceJsonNode, String path) {
+	public static JsonNode locate(JsonNode sourceJsonNode, JsonPointer path) {
 		JsonNode pathJsonNode = sourceJsonNode;
-		if (!JsonPathUtil.isRoot(path)) {
-			JsonPointer pathPointer = JsonPointer.valueOf(path);
-			pathJsonNode = sourceJsonNode.at(pathPointer);
+		if (!isRoot(path)) {
+			pathJsonNode = sourceJsonNode.at(path);
 		}
 		if (pathJsonNode.isMissingNode()) {
 			throw new NoSuchPathException(String.format("No such path - %s", path));
@@ -103,8 +128,8 @@ public class JacksonUtil {
 	 * @param path
 	 * @return
 	 */
-	public static int parseBasePathIndex(ArrayNode arrayNode, String path) {
-		int index = parseBasePath(path);
+	public static int parseLastIndex(ArrayNode arrayNode, JsonPointer path) {
+		int index = parseLast(path);
 		if (index < 0 || index > arrayNode.size()) {
 			throw new NoSuchPathException(String.format("No such path index - %s", index));
 		}
@@ -116,10 +141,10 @@ public class JacksonUtil {
 	 * @param path
 	 * @return
 	 */
-	public static int parseBasePath(String path) {
-		String basePath = JsonPathUtil.getBaseName(path);
+	public static int parseLast(JsonPointer path) {
+		String fieldName = lastFieldName(path);
 		try {
-			return Integer.parseInt(basePath);
+			return Integer.parseInt(fieldName);
 		} catch (NumberFormatException exception) {
 			throw new NoSuchPathException(String.format("Path is not an index path - %s", path));
 		}

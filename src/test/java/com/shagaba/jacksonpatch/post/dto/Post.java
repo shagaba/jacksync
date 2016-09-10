@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.shagaba.jacksonpatch.Syncable;
 
-public class Post implements Syncable<String>{
+public class Post implements Syncable{
 	
 	private String id;
 	
@@ -26,7 +26,6 @@ public class Post implements Syncable<String>{
 	/**
 	 * @return the id
 	 */
-    @Override
 	public String getId() {
 		return id;
 	}
@@ -34,7 +33,6 @@ public class Post implements Syncable<String>{
 	/**
 	 * @param id the id to set
 	 */
-    @Override
 	public void setId(String id) {
 		this.id = id;
 	}

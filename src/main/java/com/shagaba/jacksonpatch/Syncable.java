@@ -1,18 +1,6 @@
 package com.shagaba.jacksonpatch;
 
-import java.io.Serializable;
-
-public interface Syncable<ID extends Serializable> {
-
-	/**
-	 * @return the id
-	 */
-	public ID getId();
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(ID id);
+public interface Syncable {
 
 	/**
      * @return the version

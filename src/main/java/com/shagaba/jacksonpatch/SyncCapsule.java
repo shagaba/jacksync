@@ -1,33 +1,16 @@
 package com.shagaba.jacksonpatch;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class SyncCapsule<ID extends Serializable> implements Syncable<ID> {
-	
-	private ID id;
+public class SyncCapsule {
 	
 	private Long version;
 	
-	private String checksum;
+	private Long approvedVersion;
 	
-	private Long adminVersion;
+	private String targetChecksum;
 	
 	private List<PatchOperation> operations;
-
-	/**
-	 * @return the id
-	 */
-	public ID getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(ID id) {
-		this.id = id;
-	}
 
 	/**
 	 * @return the version
@@ -44,31 +27,31 @@ public class SyncCapsule<ID extends Serializable> implements Syncable<ID> {
 	}
 
 	/**
-	 * @return the checksum
+	 * @return the approvedVersion
 	 */
-	public String getChecksum() {
-		return checksum;
+	public Long getApprovedVersion() {
+		return approvedVersion;
 	}
 
 	/**
-	 * @param checksum the checksum to set
+	 * @param approvedVersion the approvedVersion to set
 	 */
-	public void setChecksum(String checksum) {
-		this.checksum = checksum;
+	public void setApprovedVersion(Long approvedVersion) {
+		this.approvedVersion = approvedVersion;
 	}
 
 	/**
-	 * @return the adminVersion
+	 * @return the targetChecksum
 	 */
-	public Long getAdminVersion() {
-		return adminVersion;
+	public String getTargetChecksum() {
+		return targetChecksum;
 	}
 
 	/**
-	 * @param adminVersion the adminVersion to set
+	 * @param targetChecksum the targetChecksum to set
 	 */
-	public void setAdminVersion(Long adminVersion) {
-		this.adminVersion = adminVersion;
+	public void setTargetChecksum(String targetChecksum) {
+		this.targetChecksum = targetChecksum;
 	}
 
 	/**
@@ -85,4 +68,5 @@ public class SyncCapsule<ID extends Serializable> implements Syncable<ID> {
 		this.operations = operations;
 	}
 
+	
 }
