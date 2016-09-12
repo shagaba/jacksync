@@ -2,6 +2,8 @@
 
 ##Creating and applying patches
 
+[![Build Status](https://travis-ci.org/shagaba/jackson-patch-sync.svg?branch=master)]
+
 The project provides a library for producing and applying patches to Java objects. 
 Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) written in Java, which uses Jackson at its core.
 
