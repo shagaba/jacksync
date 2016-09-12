@@ -18,13 +18,15 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 
 ```json
 {
-	"version" : "5",
-	"approvedVersion" : null,
+	"version" : 5,
+	"approvedVersion" : 6,
 	"targetChecksum" : "Checksum",
 	"operations" : [
 		{ "op" : "replace", "path" : "/title", "value" : "How To Use Sync Capsule" },
 		{ "op" : "add", "path" : "/author", "value" : "shagaba" },
-		{ "op" : "add", "path" : "/tags/3", "value" : "sync" }
+		{ "op" : "add", "path" : "/tags/3", "value" : "sync" },
+		{ "op" : "replace", "path" : "/version", "value" : 6 },
+		{ "op" : "test", "path" : "/version", "value" : 6 }
 	]
 }
 ```
