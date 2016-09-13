@@ -60,7 +60,7 @@ public class ChecksumUtil {
 			throw new IllegalArgumentException("Input string cannot be null or empty");
 		}
 		if (Strings.isNullOrEmpty(receivedChecksum)) {
-			throw new IllegalArgumentException("checksum cannot be null or empty");
+			throw new IllegalArgumentException("Checksum cannot be null or empty");
 		}
 		String checksum = computeChecksum(string);
 		return Objects.equals(checksum, receivedChecksum);

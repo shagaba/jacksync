@@ -9,24 +9,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shagaba.jacksonpatch.PatchOperation;
 import com.shagaba.jacksonpatch.SyncCapsule;
 import com.shagaba.jacksonpatch.Syncable;
+import com.shagaba.jacksonpatch.exception.ChecksumMismatchException;
 import com.shagaba.jacksonpatch.exception.InvalidSyncVersionException;
 import com.shagaba.jacksonpatch.exception.SyncProcessingException;
+import com.shagaba.jacksonpatch.utils.ChecksumUtil;
 
-public class MergeService {
+public class LocalSyncService {
 	
 	private ObjectMapper objectMapper;
 	
 	/**
 	 * 
 	 */
-	public MergeService() {
+	public LocalSyncService() {
 		super();
 	}
 
 	/**
 	 * @param objectMapper
 	 */
-	public MergeService(ObjectMapper objectMapper) {
+	public LocalSyncService(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
@@ -50,8 +52,8 @@ public class MergeService {
 	 * @param syncCapsule
 	 * @return
 	 */
-	public <T extends Syncable> T merge(T sourceObject, SyncCapsule syncCapsule) {
-		return merge(sourceObject, syncCapsule, false);
+	public <T extends Syncable> T clientSync(T sourceObject, SyncCapsule syncCapsule) {
+		return sync(sourceObject, syncCapsule, true);
 	}
 	
 	/**
@@ -60,29 +62,29 @@ public class MergeService {
 	 * @param syncCapsule
 	 * @return
 	 */
-	public <T extends Syncable> T serverMerge(T sourceObject, SyncCapsule syncCapsule) {
-		return merge(sourceObject, syncCapsule, true);
+	public <T extends Syncable> T serverSync(T sourceObject, SyncCapsule syncCapsule) {
+		return sync(sourceObject, syncCapsule, false);
 	}
 
 	/**
 	 * 
 	 * @param sourceObject
 	 * @param syncCapsule
-	 * @param isServerMerge
+	 * @param isClientSync
 	 * @return
 	 */
-	public <T extends Syncable> T merge(T sourceObject, SyncCapsule syncCapsule, boolean isServerMerge) {
+	protected <T extends Syncable> T sync(T sourceObject, SyncCapsule syncCapsule, boolean isClientSync) {
 		// validate sourceObject version = syncCapsule version
 		if (!Objects.equals(sourceObject.getVersion(), syncCapsule.getVersion())) {
 			throw new InvalidSyncVersionException("Sync Version Mismatch");
 		}
 		
-		T targetObject = merge(sourceObject, syncCapsule.getOperations());
+		T targetObject = sync(sourceObject, syncCapsule);
 		
-		Long targetVersion = isServerMerge ? sourceObject.getVersion() : syncCapsule.getApprovedVersion();
 		// validate targetObject version = target version
+		Long targetVersion = isClientSync ? syncCapsule.getApprovedVersion() : sourceObject.getVersion();
 		if (!Objects.equals(targetObject.getVersion(), targetVersion)) {
-			throw new InvalidSyncVersionException("Sync Version Mismatch");
+			throw new InvalidSyncVersionException("Target Version Mismatch");
 		}
 		return targetObject;
 	}
@@ -90,16 +92,24 @@ public class MergeService {
 	/**
 	 * 
 	 * @param sourceObject
-	 * @param actions
+	 * @param syncCapsule
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T merge(T sourceObject, List<PatchOperation> actions) {
+	protected <T> T sync(T sourceObject, SyncCapsule syncCapsule) {
 		T targetObject = null;
 		try {
 			JsonNode sourceJsonNode = objectMapper.valueToTree(sourceObject);
-			JsonNode mergedJsonNode = merge(sourceJsonNode, actions);
-			targetObject = (T) objectMapper.treeToValue(mergedJsonNode, sourceObject.getClass());
+			JsonNode targetJsonNode = sync(sourceJsonNode, syncCapsule.getOperations());
+			
+			// verifyChecksum
+			String targetJson = objectMapper.writeValueAsString(targetJsonNode);
+			boolean isChecksumValid =  ChecksumUtil.verifyChecksum(targetJson, syncCapsule.getTargetChecksum());
+			if (!isChecksumValid) {
+				throw new ChecksumMismatchException("Checksum on target does not match checksum on sync capsule");
+			}
+			
+			targetObject = (T) objectMapper.treeToValue(targetJsonNode, sourceObject.getClass());
 		} catch (JsonProcessingException e) {
 			throw new SyncProcessingException(e);
 		}
@@ -112,12 +122,12 @@ public class MergeService {
 	 * @param actions
 	 * @return
 	 */
-	public JsonNode merge(JsonNode currentJsonNode, List<PatchOperation> actions) {
-		JsonNode mergedJsonNode = currentJsonNode.deepCopy();
+	protected JsonNode sync(JsonNode currentJsonNode, List<PatchOperation> actions) {
+		JsonNode syncdJsonNode = currentJsonNode.deepCopy();
 		for (PatchOperation action : actions) {
-			mergedJsonNode = action.apply(mergedJsonNode);
+			syncdJsonNode = action.apply(syncdJsonNode);
 		}
-		return mergedJsonNode;
+		return syncdJsonNode;
 	}
 	
 
