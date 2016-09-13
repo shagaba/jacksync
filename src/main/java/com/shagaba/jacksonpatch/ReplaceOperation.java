@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.shagaba.jacksonpatch.exception.NoSuchPathException;
 import com.shagaba.jacksonpatch.utils.JacksonUtil;
 
 /**
@@ -80,7 +81,10 @@ public class ReplaceOperation extends PatchPathOperation {
 		JsonNode pathJsonNode = JacksonUtil.locateHeadContainer(sourceJsonNode, path);
 		if (pathJsonNode.isArray()) {
 			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-			int index = JacksonUtil.parseLastIndex(pathArrayNode, path);
+			int index = JacksonUtil.parseLast(path);
+			if (index < 0 || index > pathArrayNode.size()) {
+				throw new NoSuchPathException(String.format("No such path index - %s", index));
+			}
 			pathArrayNode.set(index, value);
 
 		} else {

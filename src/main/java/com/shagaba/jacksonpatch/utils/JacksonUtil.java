@@ -3,7 +3,6 @@ package com.shagaba.jacksonpatch.utils;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Strings;
 import com.shagaba.jacksonpatch.exception.IllegalContainerException;
 import com.shagaba.jacksonpatch.exception.NoSuchPathException;
@@ -120,20 +119,6 @@ public class JacksonUtil {
 			throw new NoSuchPathException(String.format("No such path - %s", path));
 		}
 		return pathJsonNode;
-	}
-
-	/**
-	 * 
-	 * @param arrayNode
-	 * @param path
-	 * @return
-	 */
-	public static int parseLastIndex(ArrayNode arrayNode, JsonPointer path) {
-		int index = parseLast(path);
-		if (index < 0 || index > arrayNode.size()) {
-			throw new NoSuchPathException(String.format("No such path index - %s", index));
-		}
-		return index;
 	}
 
 	/**
