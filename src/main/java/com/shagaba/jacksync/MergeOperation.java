@@ -3,25 +3,40 @@ package com.shagaba.jacksync;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class MergeOperation extends PatchOperation {
+public class MergeOperation extends PatchPathOperation {
 
     private JsonNode value;
     
     /**
-	 * 
+	 * Constructs the merge operation
 	 */
 	public MergeOperation() {
 		super();
 	}
 
 	/**
-	 * @param value
+	 * Constructs the merge operation
+	 * 
+	 * @param path the path where the value will be added. ('/foo/bar/4')
+	 * @param value the value to add.
 	 */
-	public MergeOperation(JsonNode value) {
-		super();
+	public MergeOperation(JsonPointer path, JsonNode value) {
+		super(path);
+		this.value = value;
+	}
+
+	/**
+	 * Constructs the merge operation
+	 * 
+	 * @param path the path where the value will be added. ('/foo/bar/4')
+	 * @param value the value to add.
+	 */
+	public MergeOperation(String path, JsonNode value) {
+		super(path);
 		this.value = value;
 	}
 
