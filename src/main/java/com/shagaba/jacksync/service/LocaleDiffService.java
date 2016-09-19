@@ -12,7 +12,9 @@ import com.shagaba.jacksync.AddOperation;
 import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.RemoveOperation;
 import com.shagaba.jacksync.ReplaceOperation;
+import com.shagaba.jacksync.SyncCapsule;
 import com.shagaba.jacksync.Syncable;
+import com.shagaba.jacksync.utils.ChecksumUtils;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
 public class LocaleDiffService<T extends Syncable> {
@@ -32,6 +34,23 @@ public class LocaleDiffService<T extends Syncable> {
 	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
+	
+	/**
+	 * 
+	 * @param source
+	 * @param target
+	 * @return
+	 * @throws Exception
+	 */
+	public SyncCapsule diff(T source, T target) throws Exception {
+		List<PatchOperation> operations = diffOperations(source, target);
+		SyncCapsule syncCapsule = new SyncCapsule();
+		syncCapsule.setVersion(source.getVersion());
+		syncCapsule.setApprovedVersion(target.getVersion());
+		syncCapsule.setTargetChecksum(ChecksumUtils.computeChecksum(objectMapper.writeValueAsString(target)));
+		syncCapsule.setOperations(operations);
+		return syncCapsule;
+	}
 
 	/**
 	 * 
@@ -39,7 +58,7 @@ public class LocaleDiffService<T extends Syncable> {
 	 * @param target
 	 * @return
 	 */
-	public List<PatchOperation> diff(T source, T target) {
+	public List<PatchOperation> diffOperations(T source, T target) {
 		List<PatchOperation> operations = Lists.newArrayList();
 		
 		JsonNode sourceJsonNode = objectMapper.valueToTree(source);
