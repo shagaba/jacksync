@@ -103,13 +103,13 @@ public class LocalSyncService {
 			JsonNode targetJsonNode = sync(sourceJsonNode, syncCapsule.getOperations());
 			
 			// verifyChecksum
-			String targetJson = objectMapper.writeValueAsString(targetJsonNode);
+			targetObject = (T) objectMapper.treeToValue(targetJsonNode, sourceObject.getClass());
+			String targetJson = objectMapper.writeValueAsString(targetObject);
 			boolean isChecksumValid =  ChecksumUtils.verifyChecksum(targetJson, syncCapsule.getTargetChecksum());
 			if (!isChecksumValid) {
 				throw new ChecksumMismatchException("Checksum on target does not match checksum on sync capsule");
 			}
 			
-			targetObject = (T) objectMapper.treeToValue(targetJsonNode, sourceObject.getClass());
 		} catch (JsonProcessingException e) {
 			throw new SyncProcessingException(e);
 		}
