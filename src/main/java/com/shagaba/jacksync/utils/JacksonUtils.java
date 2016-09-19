@@ -135,4 +135,14 @@ public class JacksonUtils {
 		}
 	}
 
+	/**
+	 * 
+	 * @param path
+	 * @param fieldName
+	 * @return
+	 */
+	public static JsonPointer append(JsonPointer path, String fieldName) {
+		return path.append(JsonPointer.compile(SEPARATOR.concat(fieldName)));
+	}
+
 }
