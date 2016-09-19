@@ -55,6 +55,7 @@ public class AddOperation extends PatchPathOperation {
 	private JsonNode value;
 
 	/**
+	 * Constructs the add operation
 	 * 
 	 */
 	public AddOperation() {

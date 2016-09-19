@@ -31,13 +31,14 @@ import com.shagaba.jacksync.utils.JacksonUtils;
 public class CopyOperation extends PatchDualPathOperation {
 
 	/**
-	 * 
+	 * Constructs the copy operation
 	 */
 	public CopyOperation() {
 		super();
 	}
 
 	/**
+	 * Constructs the copy operation
 	 * 
 	 * @param from the source path to perform the move operation from. ('/1/description')
 	 * @param path the destination path to perform the move operation on. ('/2/description')
@@ -47,6 +48,7 @@ public class CopyOperation extends PatchDualPathOperation {
 	}
 
 	/**
+	 * Constructs the copy operation
 	 * 
 	 * @param from the source path to perform the move operation from. ('/1/description')
 	 * @param path the destination path to perform the move operation on. ('/2/description')

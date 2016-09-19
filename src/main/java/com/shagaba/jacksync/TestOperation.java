@@ -54,7 +54,7 @@ import com.shagaba.jacksync.utils.JacksonUtils;
     private JsonNode value;
 
 	/**
-	 * 
+	 * Constructs the test operation
 	 */
 	public TestOperation() {
 		super();

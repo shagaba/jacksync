@@ -29,14 +29,14 @@ import com.shagaba.jacksync.utils.JacksonUtils;
 public class RemoveOperation extends PatchPathOperation {
 
 	/**
-	 * 
+	 * Constructs the remove operation
 	 */
 	public RemoveOperation() {
 		super();
 	}
 
 	/**
-	 * Constructs the add operation
+	 * Constructs the remove operation
 	 * 
 	 * @param path the path where the value will be removed. ('/foo/bar/4')
 	 */
@@ -45,7 +45,7 @@ public class RemoveOperation extends PatchPathOperation {
 	}
 
 	/**
-	 * Constructs the add operation
+	 * Constructs the remove operation
 	 * 
 	 * @param path the path where the value will be removed. ('/foo/bar/4')
 	 */

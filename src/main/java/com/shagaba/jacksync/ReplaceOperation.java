@@ -34,7 +34,7 @@ public class ReplaceOperation extends PatchPathOperation {
 	private JsonNode value;
 
 	/**
-	 * 
+	 * Constructs the replace operation
 	 */
 	public ReplaceOperation() {
 		super();
