@@ -60,6 +60,40 @@ public class LocaleDiffService<T extends Syncable> {
 		if (!Objects.equals(sourceJsonNode, targetJsonNode)) {
 
 			if (sourceJsonNode.isArray() && targetJsonNode.isArray()) {
+				List<JsonNode> commonNodes = Lists.newArrayList(sourceJsonNode);
+				List<JsonNode> targetNodes = Lists.newArrayList(targetJsonNode);
+				commonNodes.retainAll(targetNodes);
+				
+				int commonIndex = 0;
+				int sourceIndex = 0;
+				int targetIndex = 0;
+				int maxIndex = Math.max(sourceJsonNode.size(), targetJsonNode.size());
+				
+				for (int index = 0; index < maxIndex; ++index) {
+					JsonNode commonNode = commonNodes.get(commonIndex);
+					JsonNode sourceNode = sourceJsonNode.get(sourceIndex);
+					JsonNode targetNode = targetJsonNode.get(targetIndex);
+					
+					if (commonNode.equals(sourceNode) && commonNode.equals(targetNode)) {
+						++commonIndex;
+						++sourceIndex;
+						++targetIndex;
+					} else {
+						if (commonNode.equals(sourceNode)) {
+							// add missing target
+							JsonPointer targetPath = JacksonUtils.append(path, Integer.toString(targetIndex++));
+							patchOperations.add(new AddOperation(targetPath, targetNode.deepCopy()));
+						} else if (commonNode.equals(targetNode)) {
+							// remove target
+							JsonPointer targetPath = JacksonUtils.append(path, Integer.toString(sourceIndex++));
+							patchOperations.add(new RemoveOperation(targetPath));
+						} else {
+							JsonPointer targetPath = JacksonUtils.append(path, Integer.toString(targetIndex++));
+							diff(sourceNode, targetNode, patchOperations, targetPath);
+							++sourceIndex;
+						}
+					}
+				}
 				
 			} else if (sourceJsonNode.isObject() &&  targetJsonNode.isObject()) {
 				// source iteration
