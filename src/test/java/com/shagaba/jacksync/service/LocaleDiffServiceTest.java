@@ -1,8 +1,11 @@
 package com.shagaba.jacksync.service;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +14,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.shagaba.jacksync.PatchOperation;
+import com.shagaba.jacksync.SyncCapsule;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;
@@ -51,6 +55,7 @@ public class LocaleDiffServiceTest {
     public void addTitle() throws Exception {
     	String title = "my test title";
     	Post postV1 = new Post();
+    	postV1.setVersion(0L);
 //    	postV1.setTitle(title);
     	postV1.setAuthor(new Author("1", "2", "3"));
     	postV1.setSections(new ArrayList<Section>());
@@ -60,6 +65,7 @@ public class LocaleDiffServiceTest {
     	postV1.getSections().add(new Section("section-4", null));
 
     	Post postV1_1 = new Post();
+    	postV1_1.setVersion(1L);
     	postV1_1.setTitle(title);
     	postV1_1.setAuthor(new Author("james", "2", "3"));
     	postV1_1.setSections(new ArrayList<Section>());
@@ -71,9 +77,13 @@ public class LocaleDiffServiceTest {
         // read action
     	LocaleDiffService<Post> diffService = new LocaleDiffService<>();
         diffService.setObjectMapper(mapper);
-        List<PatchOperation> operations = diffService.diff(postV1, postV1_1);
-        System.out.println(operations);
+        SyncCapsule syncCapsule = diffService.diff(postV1, postV1_1);
         
+        LocalSyncService localSyncService = new LocalSyncService();
+        localSyncService.setObjectMapper(mapper);
+        Post postV1_2 = localSyncService.clientSync(postV1, syncCapsule);
+        
+        Assert.assertThat(postV1_2, is(postV1_1));
     }
 
 
