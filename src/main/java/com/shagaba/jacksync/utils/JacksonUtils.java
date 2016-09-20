@@ -16,6 +16,7 @@ import com.shagaba.jacksync.exception.NoSuchPathException;
 public class JacksonUtils {
 
     public static final String SEPARATOR = "/";
+    public static final String AFTER_LAST_ARRAY_ELEMENT = "-";
 
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -133,6 +134,16 @@ public class JacksonUtils {
 		} catch (NumberFormatException exception) {
 			throw new NoSuchPathException(String.format("Path is not an index path - %s", path));
 		}
+	}
+
+	/**
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public static boolean isAfterLastArrayElement(JsonPointer path) {
+		String fieldName = lastFieldName(path);
+		return AFTER_LAST_ARRAY_ELEMENT.equals(fieldName);
 	}
 
 	/**

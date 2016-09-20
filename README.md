@@ -39,6 +39,7 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 
 The "add" operation performs one of the following functions, depending upon what the target location references:
 * If the target location specifies an array index, a new value is inserted into the array at the specified index.
+* The character "-" is a new array index referenced value of a nonexistent member after the last array element "/foo/-".
 * If the target location specifies an object member that does not already exist, a new member is added to the object.
 * If the target location specifies an object member that does exist, that member's value is replaced.
 The operation object MUST contain a "value" member whose content specifies the value to be added.

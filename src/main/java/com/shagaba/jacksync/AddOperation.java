@@ -16,6 +16,9 @@ import com.shagaba.jacksync.utils.JacksonUtils;
  * o If the target location specifies an array index, a new value is inserted
  * into the array at the specified index.
  * 
+ * o The character "-" is a new array index referenced value of a nonexistent 
+ * member after the last array element "/foo/-".
+ * 
  * o If the target location specifies an object member that does not already
  * exist, a new member is added to the object.
  * 
@@ -103,13 +106,19 @@ public class AddOperation extends PatchPathOperation {
 		JsonNode pathJsonNode = JacksonUtils.locateHeadContainer(sourceJsonNode, path);
 		if (pathJsonNode.isArray()) {
 			ArrayNode pathArrayNode = (ArrayNode) pathJsonNode;
-			int index = JacksonUtils.parseLast(path);
-			if (index < 0 || index > pathArrayNode.size()) {
-				throw new NoSuchPathException(String.format("No such path index - %s", index));
-			} else if (index == pathArrayNode.size()) {
+			if (JacksonUtils.isAfterLastArrayElement(path)) {
 				pathArrayNode.add(value);
 			} else {
-				pathArrayNode.insert(index, value);
+				int index = JacksonUtils.parseLast(path);
+				if (index < 0 || index > pathArrayNode.size()) {
+					throw new NoSuchPathException(String.format("No such path index - %s", index));
+				}
+				
+				if (index == pathArrayNode.size()) {
+					pathArrayNode.add(value);
+				} else {
+					pathArrayNode.insert(index, value);
+				}
 			}
 
 		} else {

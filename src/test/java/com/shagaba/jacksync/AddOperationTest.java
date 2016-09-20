@@ -149,4 +149,27 @@ public class AddOperationTest {
         Assert.assertThat(postV2.getSections().get(4), equalTo(section5));
     }
 
+    @Test
+    public void addAfterLastSection() throws Exception {
+    	Post postV1 = new Post();
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+    	postV1.getSections().add(new Section("section-2", null));
+    	postV1.getSections().add(new Section("section-3", null));
+        postV1.getSections().add(new Section("section-4", null));
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+        Section section5 = new Section("section-5", null);
+        AddOperation addOperation = new AddOperation("/sections/-", mapper.valueToTree(section5));
+        String addValueJson = mapper.writeValueAsString(addOperation);
+
+        // read action
+        PatchOperation action = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = action.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2.getSections().size(), equalTo(5));
+        Assert.assertThat(postV2.getSections().get(4), equalTo(section5));
+    }
+
 }
