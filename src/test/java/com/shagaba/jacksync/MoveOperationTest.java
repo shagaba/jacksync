@@ -120,5 +120,29 @@ public class MoveOperationTest {
         Assert.assertThat(postV2.getSections().size(), equalTo(5));
         Assert.assertThat(postV2.getSections().get(3).getTitle(), equalTo(moveMe));
     }
+    
+    @Test
+    public void moveAfterLastSection() throws Exception {
+    	String moveMe = "please move me";
+    	Post postV1 = new Post();
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+    	postV1.getSections().add(new Section(moveMe, null));
+    	postV1.getSections().add(new Section("section-2", null));
+        postV1.getSections().add(new Section("section-3", null));
+        postV1.getSections().add(new Section("section-5", null));
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+        MoveOperation moveOperation = new MoveOperation("/sections/1", "/sections/-");
+        String addValueJson = mapper.writeValueAsString(moveOperation);
+
+        // read action
+        PatchOperation action = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = action.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2.getSections().size(), equalTo(5));
+        Assert.assertThat(postV2.getSections().get(4).getTitle(), equalTo(moveMe));
+    }
 
 }

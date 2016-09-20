@@ -119,5 +119,28 @@ public class CopyOperationTest {
         Assert.assertThat(postV2.getSections().size(), equalTo(6));
         Assert.assertThat(postV2.getSections().get(3), equalTo(postV1.getSections().get(1)));
     }
+    
+    @Test
+    public void copyAfterLastSection() throws Exception {
+    	Post postV1 = new Post();
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+    	postV1.getSections().add(new Section("section-2", null));
+    	postV1.getSections().add(new Section("section-3", null));
+        postV1.getSections().add(new Section("section-4", null));
+        postV1.getSections().add(new Section("section-5", null));
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+        CopyOperation copyOperation = new CopyOperation("/sections/1", "/sections/-");
+        String addValueJson = mapper.writeValueAsString(copyOperation);
+
+        // read action
+        PatchOperation action = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = action.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2.getSections().size(), equalTo(6));
+        Assert.assertThat(postV2.getSections().get(5), equalTo(postV1.getSections().get(1)));
+    }
 
 }
