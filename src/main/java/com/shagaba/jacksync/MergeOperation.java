@@ -6,6 +6,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.shagaba.jacksync.utils.JacksonUtils;
 
 public class MergeOperation extends PatchPathOperation {
 
@@ -66,14 +67,15 @@ public class MergeOperation extends PatchPathOperation {
 	 * @param elementJsonNode
 	 */
 	private void merge(JsonNode sourceJsonNode, JsonNode elementJsonNode) {
+		JsonNode pathJsonNode = JacksonUtils.locate(sourceJsonNode, path);
  		for (Iterator<Map.Entry<String, JsonNode>> iterator = elementJsonNode.fields() ; iterator.hasNext();) {
      		Map.Entry<String, JsonNode> elementMapEntry = iterator.next();
- 			if (sourceJsonNode.isArray()) {
- 				sourceJsonNode = elementJsonNode;
+ 			if (pathJsonNode.isArray()) {
+ 				pathJsonNode = elementJsonNode;
  			} else {
- 				ObjectNode sourceObjectNode = (ObjectNode) sourceJsonNode;
+ 				ObjectNode sourceObjectNode = (ObjectNode) pathJsonNode;
 	     		JsonNode nextValueJsonNode = elementMapEntry.getValue();
-	     		JsonNode nextSourceJsonNode = sourceJsonNode.get(elementMapEntry.getKey());
+	     		JsonNode nextSourceJsonNode = pathJsonNode.get(elementMapEntry.getKey());
 
 	     		if (sourceObjectNode.has(elementMapEntry.getKey())) {
 	     			if (!nextValueJsonNode.isMissingNode() && !nextSourceJsonNode.isObject()) {

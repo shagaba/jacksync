@@ -60,7 +60,7 @@ public class MergeOperationTest {
     	Post postV1_1 = new Post();
     	postV1_1.setTitle(title);
 
-        MergeOperation mergeOperation = new MergeOperation("/", mapper.valueToTree(postV1_1));
+        MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
         // read action
@@ -80,7 +80,7 @@ public class MergeOperationTest {
     	Post postV1_1 = new Post();
     	postV1_1.setAuthor(author);
     	
-        MergeOperation mergeOperation = new MergeOperation("/", mapper.valueToTree(postV1_1));
+        MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
         // read action
@@ -97,7 +97,7 @@ public class MergeOperationTest {
     	postV1.setAuthor(new Author("1", "2", "3"));
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
-        MergeOperation mergeOperation = new MergeOperation("/", mapper.readTree("{\"author\":{\"firstName\":\"james\"}}"));
+        MergeOperation mergeOperation = new MergeOperation("", mapper.readTree("{\"author\":{\"firstName\":\"james\"}}"));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
         // read action
@@ -114,7 +114,7 @@ public class MergeOperationTest {
     	postV1.setAuthor(new Author("1", "2", "3"));
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
-        MergeOperation mergeOperation = new MergeOperation("/", mapper.readTree("{\"author\":{\"firstName\":null}}"));
+        MergeOperation mergeOperation = new MergeOperation("", mapper.readTree("{\"author\":{\"firstName\":null}}"));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
         // read action
@@ -144,7 +144,7 @@ public class MergeOperationTest {
        	postV1_1.getSections().add(new Section("section-3", null));
        	postV1_1.getSections().add(new Section("section-4", null));
 
-        MergeOperation mergeOperation = new MergeOperation("/", mapper.valueToTree(postV1_1));
+        MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
         // read action
@@ -175,7 +175,7 @@ public class MergeOperationTest {
        	postV1_1.getSections().add(new Section("section-4", null));
        	postV1_1.getSections().add(section5);
 
-        MergeOperation mergeOperation = new MergeOperation("/", mapper.valueToTree(postV1_1));
+        MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
         // read action

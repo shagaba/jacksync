@@ -34,18 +34,6 @@ public class JacksonUtils {
     	}
     }
     
-    /**
-     * Returns the base name of the path.
-     *
-     * @param path the path to process
-     * @return The base name of the path.
-     */
-    public static String lastFieldName(JsonPointer jsonPointer) {
-    	String lastPath = jsonPointer.last().toString();
-    	// remove path separator "/" and return a clean field name
-    	return lastPath.substring(1);
-    }
-    
 	/**
 	 * Checks if an input string is in valid JSON format
 	 * 
@@ -122,6 +110,18 @@ public class JacksonUtils {
 		return pathJsonNode;
 	}
 
+    /**
+     * Returns the base name of the path.
+     *
+     * @param path the path to process
+     * @return The base name of the path.
+     */
+    public static String lastFieldName(JsonPointer jsonPointer) {
+    	String lastPath = jsonPointer.last().toString();
+    	// remove path separator "/" and return a clean field name
+    	return lastPath.substring(1);
+    }
+    
 	/**
 	 * 
 	 * @param path
