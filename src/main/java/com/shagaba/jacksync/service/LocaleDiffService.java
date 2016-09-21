@@ -34,16 +34,17 @@ public class LocaleDiffService<T extends Syncable> {
 	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
-	
+
 	/**
 	 * 
 	 * @param source
 	 * @param target
+	 * @param isMergeEnabled
 	 * @return
 	 * @throws Exception
 	 */
-	public SyncCapsule diff(T source, T target) throws Exception {
-		List<PatchOperation> operations = diffOperations(source, target);
+	public SyncCapsule diff(T source, T target, boolean isMergeEnabled) throws Exception {
+		List<PatchOperation> operations = diffOperations(source, target, isMergeEnabled);
 		SyncCapsule syncCapsule = new SyncCapsule();
 		syncCapsule.setVersion(source.getVersion());
 		syncCapsule.setApprovedVersion(target.getVersion());
@@ -56,14 +57,19 @@ public class LocaleDiffService<T extends Syncable> {
 	 * 
 	 * @param source
 	 * @param target
+	 * @param isMergeEnabled
 	 * @return
 	 */
-	public List<PatchOperation> diffOperations(T source, T target) {
+	public List<PatchOperation> diffOperations(T source, T target, boolean isMergeEnabled) {
 		List<PatchOperation> operations = Lists.newArrayList();
 		
 		JsonNode sourceJsonNode = objectMapper.valueToTree(source);
 		JsonNode targetJsonNode = objectMapper.valueToTree(target);
 		operations = diff(sourceJsonNode, targetJsonNode, operations, JsonPointer.compile("/"));
+		if (isMergeEnabled) {
+			MergeOperationOptimizer mergeOperationOptimizer = new MergeOperationOptimizer();
+			operations = mergeOperationOptimizer.optimize(targetJsonNode, operations);
+		}
 		return operations;
 	}
 	

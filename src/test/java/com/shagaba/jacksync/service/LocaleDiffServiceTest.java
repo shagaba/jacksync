@@ -19,7 +19,10 @@ import com.shagaba.jacksync.post.dto.Section;
 
 public class LocaleDiffServiceTest {
 	
-	private ObjectMapper mapper = null;
+	private ObjectMapper mapper;
+	private LocaleDiffService<Post> diffService;
+	private LocalSyncService localSyncService;
+	
 
     public ObjectMapper newObjectMapper() {
         ObjectMapper jacksonObjectMapper = new ObjectMapper();
@@ -47,6 +50,11 @@ public class LocaleDiffServiceTest {
     public void beforeEach() {
     	mapper = newObjectMapper();
     	
+    	diffService = new LocaleDiffService<>();
+        diffService.setObjectMapper(mapper);
+        
+        localSyncService = new LocalSyncService();
+        localSyncService.setObjectMapper(mapper);
     }
 
     @Test
@@ -65,23 +73,24 @@ public class LocaleDiffServiceTest {
     	Post postV1_1 = new Post();
     	postV1_1.setVersion(1L);
     	postV1_1.setTitle(title);
-    	postV1_1.setAuthor(new Author("james", "2", "3"));
+    	postV1_1.setAuthor(new Author("james", "bond", "3"));
     	postV1_1.setSections(new ArrayList<Section>());
     	postV1_1.getSections().add(new Section("section-1", null));
     	postV1_1.getSections().add(new Section("section-2", null));
     	postV1_1.getSections().add(new Section("section-X", null));
     	postV1_1.getSections().add(new Section("section-4", null));
 
-        // read action
-    	LocaleDiffService<Post> diffService = new LocaleDiffService<>();
-        diffService.setObjectMapper(mapper);
-        SyncCapsule syncCapsule = diffService.diff(postV1, postV1_1);
-        
-        LocalSyncService localSyncService = new LocalSyncService();
-        localSyncService.setObjectMapper(mapper);
+    	// SyncCapsule regular diff
+        SyncCapsule syncCapsule = diffService.diff(postV1, postV1_1, false);
         Post postV1_2 = localSyncService.clientSync(postV1, syncCapsule);
         
+        // SyncCapsule with merge operations 
+        SyncCapsule syncCapsule2 = diffService.diff(postV1, postV1_1, true);
+        Post postV1_21 = localSyncService.clientSync(postV1, syncCapsule2);
+        
+        
         Assert.assertThat(postV1_2, is(postV1_1));
+        Assert.assertThat(postV1_21, is(postV1_1));
     }
 
 
