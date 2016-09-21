@@ -31,5 +31,7 @@ public abstract class PatchOperation {
 	 * @return the JsonNode object patched value
 	 */
 	public abstract JsonNode apply(JsonNode sourceJsonNode);
+	
+	public abstract String getPath();
 
 }
