@@ -29,7 +29,7 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 	@Override
 	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) {
 		List<PatchOperation> operations = diffProcessor.diff(sourceJsonNode, targetJsonNode);
-		return mergeOperationOptimize(targetJsonNode, operations);
+		return optimize(targetJsonNode, operations);
 	}
 	
 	protected class JsonPointerData {
@@ -43,47 +43,29 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 			fieldNames = new ArrayList<>();
 			operations = new ArrayList<>();
 		}
-		/**
-		 * @param fieldNames
-		 * @param operations
-		 */
-		public JsonPointerData(List<String> fieldNames, List<PatchOperation> operations) {
-			this.fieldNames = fieldNames;
-			this.operations = operations;
-		}
+
 		/**
 		 * @return the fieldNames
 		 */
 		public List<String> getFieldNames() {
 			return fieldNames;
 		}
-		/**
-		 * @param fieldNames the fieldNames to set
-		 */
-		public void setFieldNames(List<String> fieldNames) {
-			this.fieldNames = fieldNames;
-		}
+
 		/**
 		 * @return the operations
 		 */
 		public List<PatchOperation> getOperations() {
 			return operations;
 		}
-		/**
-		 * @param operations the operations to set
-		 */
-		public void setOperations(List<PatchOperation> operations) {
-			this.operations = operations;
-		}
 	}
-
+	
 	/**
 	 * 
 	 * @param targetJsonNode
 	 * @param operations
 	 * @return
 	 */
-	protected List<PatchOperation> mergeOperationOptimize(JsonNode targetJsonNode, List<PatchOperation> operations) {
+	protected List<PatchOperation> optimize(JsonNode targetJsonNode, List<PatchOperation> operations) {
 		Map<JsonPointer, JsonPointerData> parentToJsonPointerDataMap = new HashMap<>();
 		
 		for (PatchOperation operation: operations) {
@@ -109,6 +91,8 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 	 */
 	protected List<PatchOperation> optimize(JsonNode targetJsonNode, Map<JsonPointer, JsonPointerData> parentToJsonPointerDataMap) {
 		List<PatchOperation> optimizedOperations = new ArrayList<>();
+		Map<String, MergeOperation> parentToMergeOperation = new HashMap<>();
+		
 		for (JsonPointer parentPath : parentToJsonPointerDataMap.keySet()) {
 			JsonPointerData jsonPointerData = parentToJsonPointerDataMap.get(parentPath);
 			if (jsonPointerData.getOperations().size() == 1) {
@@ -118,11 +102,45 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 				ObjectNode parentObjectNode = (ObjectNode) parentJsonNode.deepCopy();
 				parentObjectNode.retain(jsonPointerData.getFieldNames());
 				MergeOperation mergeOperation = new MergeOperation(parentPath, parentObjectNode);
-				optimizedOperations.add(mergeOperation);
+				mergeOperation = parentObjectMergeOperation(targetJsonNode, mergeOperation);
+				
+				MergeOperation parentMergeOperation = parentToMergeOperation.get(mergeOperation.getPath());
+				if (parentMergeOperation == null) {
+					parentToMergeOperation.put(mergeOperation.getPath(), mergeOperation);
+				} else {
+					JsonNode mergedJsonNode = JacksonUtils.merge(parentMergeOperation.getValue(), mergeOperation.getValue());
+					parentMergeOperation.setValue(mergedJsonNode);
+				}
 			}
 		}
+		if (!parentToMergeOperation.isEmpty()) {
+			optimizedOperations.addAll(parentToMergeOperation.values());
+		}
 		return optimizedOperations;
-		
 	}
+
+	/**
+	 * 
+	 * @param targetJsonNode
+	 * @param mergeOperation
+	 * @return
+	 */
+	public MergeOperation parentObjectMergeOperation(JsonNode targetJsonNode, MergeOperation mergeOperation) {
+		JsonPointer path = JsonPointer.compile(mergeOperation.getPath());
+		if (JacksonUtils.isRoot(path)) {
+			return mergeOperation;
+		}
+		JsonNode parentJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, path);
+		if (parentJsonNode.isObject()) {
+			ObjectNode parentObjectNode = (ObjectNode) parentJsonNode.deepCopy();
+			parentObjectNode.removeAll();
+			parentObjectNode.set(JacksonUtils.lastFieldName(path), mergeOperation.getValue());
+			MergeOperation parentMergeOperation = new MergeOperation(path.head(), parentObjectNode);
+			return parentObjectMergeOperation(targetJsonNode, parentMergeOperation);
+		} else {
+			return mergeOperation;
+		}
+	}
+
 
 }
