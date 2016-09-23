@@ -52,6 +52,7 @@ public class LocaleDiffServiceTest {
     	
     	diffService = new LocaleDiffService<>();
         diffService.setObjectMapper(mapper);
+        diffService.setDiffProcessor(new SimpleDiffProcessor());
         
         localSyncService = new LocalSyncService();
         localSyncService.setObjectMapper(mapper);
@@ -81,11 +82,12 @@ public class LocaleDiffServiceTest {
     	postV1_1.getSections().add(new Section("section-4", null));
 
     	// SyncCapsule regular diff
-        SyncCapsule syncCapsule = diffService.diff(postV1, postV1_1, false);
+        SyncCapsule syncCapsule = diffService.diff(postV1, postV1_1);
         Post postV1_2 = localSyncService.clientSync(postV1, syncCapsule);
         
         // SyncCapsule with merge operations 
-        SyncCapsule syncCapsule2 = diffService.diff(postV1, postV1_1, true);
+        diffService.setDiffProcessor(new MergeOperationDiffProcessor());
+        SyncCapsule syncCapsule2 = diffService.diff(postV1, postV1_1);
         Post postV1_21 = localSyncService.clientSync(postV1, syncCapsule2);
         
         
