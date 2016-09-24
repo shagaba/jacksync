@@ -1,6 +1,10 @@
 package com.shagaba.jacksync;
 
 import com.fasterxml.jackson.core.JsonPointer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.shagaba.jacksync.utils.JsonPointerDeserializer;
 
 /**
  * Base class for patch operations taking a path
@@ -24,6 +28,9 @@ public abstract class PatchPathOperation extends PatchOperation {
 	 */
 	public PatchPathOperation(JsonPointer path) {
 		super();
+        if (path == null) {
+            throw new IllegalArgumentException("Path is null");
+        }
 		this.path = path;
 	}
 
@@ -32,27 +39,33 @@ public abstract class PatchPathOperation extends PatchOperation {
 	 */
 	public PatchPathOperation(String path) {
 		super();
-		setPath(path);
+		basicPathChecks(path);
+		this.path = JsonPointer.compile(path);
 	}
 
 	/**
 	 * @return the path
 	 */
-	public String getPath() {
-		return path.toString();
+	@JsonSerialize(using = ToStringSerializer.class)
+	public JsonPointer getPath() {
+		return path;
 	}
 
 	/**
 	 * @param path the path to set
 	 */
-	public void setPath(String path) {
-		basicPathChecks(path);
-		this.path = JsonPointer.compile(path);
+	@JsonDeserialize(using = JsonPointerDeserializer.class)
+	public void setPath(JsonPointer path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Path is null");
+        }
+		this.path = path;
 	}
 
-    /**
-     * 
-     */
+	/**
+	 * 
+	 * @param path
+	 */
     protected void basicPathChecks(String path) {
         if (path == null) {
             throw new IllegalArgumentException("Path is null");

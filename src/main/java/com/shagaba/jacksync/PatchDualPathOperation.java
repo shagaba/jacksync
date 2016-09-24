@@ -1,6 +1,10 @@
 package com.shagaba.jacksync;
 
 import com.fasterxml.jackson.core.JsonPointer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.shagaba.jacksync.utils.JsonPointerDeserializer;
 
 /**
  * Base class for patch operations taking a path
@@ -25,6 +29,9 @@ public abstract class PatchDualPathOperation extends PatchPathOperation {
 	 */
 	public PatchDualPathOperation(JsonPointer from, JsonPointer path) {
 		super(path);
+        if (from == null) {
+            throw new IllegalArgumentException("From is null");
+        }
 		this.from = from;
 	}
 
@@ -35,22 +42,27 @@ public abstract class PatchDualPathOperation extends PatchPathOperation {
 	 */
 	public PatchDualPathOperation(String from, String path) {
 		super(path);
-		setFrom(from);
+		basicPathChecks(from);
+		this.from = JsonPointer.compile(from);
 	}
 
 	/**
 	 * @return the from
 	 */
-	public String getFrom() {
-		return from.toString();
+	@JsonSerialize(using = ToStringSerializer.class)
+	public JsonPointer getFrom() {
+		return from;
 	}
 
 	/**
 	 * @param from the from to set
 	 */
-	public void setFrom(String from) {
-		basicPathChecks(from);
-		this.from = JsonPointer.compile(from);
+	@JsonDeserialize(using = JsonPointerDeserializer.class)
+	public void setFrom(JsonPointer from) {
+        if (from == null) {
+            throw new IllegalArgumentException("From is null");
+        }
+		this.from = from;
 	}
 
 

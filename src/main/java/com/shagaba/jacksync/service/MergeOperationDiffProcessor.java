@@ -69,15 +69,14 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 		Map<JsonPointer, JsonPointerData> parentToJsonPointerDataMap = new HashMap<>();
 		
 		for (PatchOperation operation: operations) {
-			JsonPointer path = JsonPointer.compile(operation.getPath());
-			JsonNode pathJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, path);
+			JsonNode pathJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, operation.getPath());
 			if (pathJsonNode.isObject()) {
-				JsonPointer parentPointer = path.head();
+				JsonPointer parentPointer = operation.getPath().head();
 				if (!parentToJsonPointerDataMap.containsKey(parentPointer)) {
 					parentToJsonPointerDataMap.put(parentPointer, new JsonPointerData());
 				}
 				parentToJsonPointerDataMap.get(parentPointer).getOperations().add(operation);
-				parentToJsonPointerDataMap.get(parentPointer).getFieldNames().add(JacksonUtils.lastFieldName(path));
+				parentToJsonPointerDataMap.get(parentPointer).getFieldNames().add(JacksonUtils.lastFieldName(operation.getPath()));
 			}
 		}
 		return optimize(targetJsonNode, parentToJsonPointerDataMap);
@@ -91,7 +90,7 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 	 */
 	protected List<PatchOperation> optimize(JsonNode targetJsonNode, Map<JsonPointer, JsonPointerData> parentToJsonPointerDataMap) {
 		List<PatchOperation> optimizedOperations = new ArrayList<>();
-		Map<String, MergeOperation> parentToMergeOperation = new HashMap<>();
+		Map<JsonPointer, MergeOperation> parentToMergeOperation = new HashMap<>();
 		
 		for (JsonPointer parentPath : parentToJsonPointerDataMap.keySet()) {
 			JsonPointerData jsonPointerData = parentToJsonPointerDataMap.get(parentPath);
@@ -126,16 +125,15 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 	 * @return
 	 */
 	public MergeOperation parentObjectMergeOperation(JsonNode targetJsonNode, MergeOperation mergeOperation) {
-		JsonPointer path = JsonPointer.compile(mergeOperation.getPath());
-		if (JacksonUtils.isRoot(path)) {
+		if (JacksonUtils.isRoot(mergeOperation.getPath())) {
 			return mergeOperation;
 		}
-		JsonNode parentJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, path);
+		JsonNode parentJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, mergeOperation.getPath());
 		if (parentJsonNode.isObject()) {
 			ObjectNode parentObjectNode = (ObjectNode) parentJsonNode.deepCopy();
 			parentObjectNode.removeAll();
-			parentObjectNode.set(JacksonUtils.lastFieldName(path), mergeOperation.getValue());
-			MergeOperation parentMergeOperation = new MergeOperation(path.head(), parentObjectNode);
+			parentObjectNode.set(JacksonUtils.lastFieldName(mergeOperation.getPath()), mergeOperation.getValue());
+			MergeOperation parentMergeOperation = new MergeOperation(mergeOperation.getPath().head(), parentObjectNode);
 			return parentObjectMergeOperation(targetJsonNode, parentMergeOperation);
 		} else {
 			return mergeOperation;

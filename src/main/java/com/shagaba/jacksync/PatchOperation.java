@@ -3,6 +3,7 @@ package com.shagaba.jacksync;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -32,6 +33,6 @@ public abstract class PatchOperation {
 	 */
 	public abstract JsonNode apply(JsonNode sourceJsonNode);
 	
-	public abstract String getPath();
+	public abstract JsonPointer getPath();
 
 }
