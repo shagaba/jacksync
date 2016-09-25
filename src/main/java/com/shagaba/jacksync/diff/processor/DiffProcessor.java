@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.service;
+package com.shagaba.jacksync.diff.processor;
 
 import java.util.List;
 

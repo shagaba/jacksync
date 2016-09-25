@@ -3,7 +3,6 @@ package com.shagaba.jacksync.service;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,19 +12,18 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.shagaba.jacksync.PatchOperation;
-import com.shagaba.jacksync.diff.ObjectDiffEngine;
+import com.shagaba.jacksync.SyncCapsule;
+import com.shagaba.jacksync.diff.SyncableObjectDiffEngine;
 import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;
-import com.shagaba.jacksync.sync.LocalObjectSync;
 
-public class ObjectDiffEngineTest {
+public class SyncableObjectDiffEngineTest {
 	
 	private ObjectMapper mapper;
-	private ObjectDiffEngine objectDiffEngine;
-	private LocalObjectSync localObjectSync;
+	private SyncableObjectDiffEngine diffEngine;
+	private LocalSyncService localSyncService;
 	
 
     public ObjectMapper newObjectMapper() {
@@ -54,9 +52,9 @@ public class ObjectDiffEngineTest {
     public void beforeEach() {
     	mapper = newObjectMapper();
     	
-    	objectDiffEngine = new ObjectDiffEngine(mapper);
+    	diffEngine = new SyncableObjectDiffEngine(mapper);
         
-    	localObjectSync = new LocalObjectSync(mapper);
+        localSyncService = new LocalSyncService(mapper);
     }
 
     @Test
@@ -82,14 +80,14 @@ public class ObjectDiffEngineTest {
     	postV1_1.getSections().add(new Section("section-X", null));
     	postV1_1.getSections().add(new Section("section-4", null));
 
-    	// operations regular diff
-    	List<PatchOperation> operations = objectDiffEngine.diff(postV1, postV1_1);
-        Post postV1_2 = localObjectSync.sync(postV1, operations);
+    	// SyncCapsule regular diff
+        SyncCapsule syncCapsule = diffEngine.diff(postV1, postV1_1);
+        Post postV1_2 = localSyncService.clientSync(postV1, syncCapsule);
         
         // SyncCapsule with merge operations 
-        objectDiffEngine.setDiffProcessor(new MergeOperationDiffProcessor());
-        List<PatchOperation> operations2 = objectDiffEngine.diff(postV1, postV1_1);
-        Post postV1_21 = localObjectSync.sync(postV1, operations2);
+        diffEngine.setDiffProcessor(new MergeOperationDiffProcessor());
+        SyncCapsule syncCapsule2 = diffEngine.diff(postV1, postV1_1);
+        Post postV1_21 = localSyncService.clientSync(postV1, syncCapsule2);
         
         
         Assert.assertThat(postV1_2, equalTo(postV1_1));

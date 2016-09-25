@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.service;
+package com.shagaba.jacksync.diff.processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,7 +124,7 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 	 * @param mergeOperation
 	 * @return
 	 */
-	public MergeOperation parentObjectMergeOperation(JsonNode targetJsonNode, MergeOperation mergeOperation) {
+	protected MergeOperation parentObjectMergeOperation(JsonNode targetJsonNode, MergeOperation mergeOperation) {
 		if (JacksonUtils.isRoot(mergeOperation.getPath())) {
 			return mergeOperation;
 		}
