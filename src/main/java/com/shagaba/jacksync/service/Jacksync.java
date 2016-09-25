@@ -1,6 +1,10 @@
 package com.shagaba.jacksync.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shagaba.jacksync.diff.ObjectDiffEngine;
+import com.shagaba.jacksync.diff.processor.DiffProcessor;
+import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
+import com.shagaba.jacksync.diff.processor.SimpleDiffProcessor;
 
 public class Jacksync {
 	

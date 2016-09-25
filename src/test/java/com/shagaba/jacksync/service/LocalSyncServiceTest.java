@@ -16,7 +16,6 @@ import com.shagaba.jacksync.AddOperation;
 import com.shagaba.jacksync.ReplaceOperation;
 import com.shagaba.jacksync.SyncCapsule;
 import com.shagaba.jacksync.post.dto.Post;
-import com.shagaba.jacksync.service.LocalSyncService;
 import com.shagaba.jacksync.utils.ChecksumUtils;
 
 public class LocalSyncServiceTest {
