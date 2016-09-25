@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.service;
+package com.shagaba.jacksync.sync;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -16,13 +16,12 @@ import com.shagaba.jacksync.AddOperation;
 import com.shagaba.jacksync.ReplaceOperation;
 import com.shagaba.jacksync.SyncCapsule;
 import com.shagaba.jacksync.post.dto.Post;
-import com.shagaba.jacksync.utils.ChecksumUtils;
 
-public class LocalSyncServiceTest {
-	
+public class LocalObjectSyncTest {
+
 	private ObjectMapper mapper = null;
 
-	private LocalSyncService localSyncService = null;
+	private LocalObjectSync localObjectSync = null;
 	
     public ObjectMapper newObjectMapper() {
         ObjectMapper jacksonObjectMapper = new ObjectMapper();
@@ -49,7 +48,7 @@ public class LocalSyncServiceTest {
     @Before
     public void beforeEach() {
     	mapper = newObjectMapper();
-    	localSyncService = new LocalSyncService(mapper);
+    	localObjectSync = new LocalObjectSync(mapper);
     }
 
     @Test
@@ -74,12 +73,9 @@ public class LocalSyncServiceTest {
     	syncCapsule.setVersion(1L);
     	// operations
     	AddOperation addOperation = new AddOperation("/title", mapper.valueToTree(targetPost.getTitle()));
-        syncCapsule.setOperations(Arrays.asList(addOperation));
-    	// target checksum
-    	syncCapsule.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
         
     	// server sync
-        Post postV2 = localSyncService.serverSync(serverPostV1, syncCapsule);
+        Post postV2 = localObjectSync.sync(serverPostV1, Arrays.asList(addOperation));
         
         Assert.assertThat(postV2, equalTo(targetPost));
     }
@@ -109,12 +105,9 @@ public class LocalSyncServiceTest {
     	// operations
     	AddOperation addOperation = new AddOperation("/title", mapper.valueToTree(targetPost.getTitle()));
     	ReplaceOperation replaceOperation = new ReplaceOperation("/version", mapper.valueToTree(2));
-        syncCapsule.setOperations(Arrays.asList(addOperation, replaceOperation));
-    	// target checksum
-    	syncCapsule.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
         
     	// server sync
-        Post postV2 = localSyncService.clientSync(clientPostV1, syncCapsule);
+        Post postV2 = localObjectSync.sync(serverPostV1, Arrays.asList(addOperation, replaceOperation));
         
         Assert.assertThat(postV2, equalTo(targetPost));
     }
