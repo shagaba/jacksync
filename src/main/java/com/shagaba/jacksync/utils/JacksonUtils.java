@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import com.shagaba.jacksync.exception.IllegalContainerException;
 import com.shagaba.jacksync.exception.NoSuchPathException;
 
@@ -45,7 +44,7 @@ public class JacksonUtils {
 	 * @return true if the input string is in valid JSON format
 	 */
 	public static boolean isValidJson(String json) {
-		if (Strings.isNullOrEmpty(json)) {
+		if (json == null || json.isEmpty()) {
 			return false;
 		}
 		try {

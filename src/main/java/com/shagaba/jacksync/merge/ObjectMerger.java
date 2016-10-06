@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.sync;
+package com.shagaba.jacksync.merge;
 
 import java.util.List;
 
@@ -8,28 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.exception.SyncProcessingException;
 
-public class LocalObjectSync {
+public class ObjectMerger implements PatchOperationsMerger {
 	
 	private ObjectMapper objectMapper;
 	
 	/**
 	 * @param objectMapper
 	 */
-	public LocalObjectSync(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-	}
-
-	/**
-	 * @return the objectMapper
-	 */
-	public ObjectMapper getObjectMapper() {
-		return objectMapper;
-	}
-
-	/**
-	 * @param objectMapper the objectMapper to set
-	 */
-	public void setObjectMapper(ObjectMapper objectMapper) {
+	public ObjectMerger(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
@@ -39,7 +25,7 @@ public class LocalObjectSync {
 	 * @param actions
 	 * @return
 	 */
-	protected JsonNode sync(JsonNode currentJsonNode, List<PatchOperation> actions) {
+	protected JsonNode merge(JsonNode currentJsonNode, List<PatchOperation> actions) {
 		JsonNode syncdJsonNode = currentJsonNode.deepCopy();
 		for (PatchOperation action : actions) {
 			syncdJsonNode = action.apply(syncdJsonNode);
@@ -53,12 +39,13 @@ public class LocalObjectSync {
 	 * @param syncCapsule
 	 * @return
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T sync(T sourceObject, List<PatchOperation> operations) {
+	public <T> T apply(T sourceObject, List<PatchOperation> operations) {
 		T targetObject = null;
 		try {
 			JsonNode sourceJsonNode = objectMapper.valueToTree(sourceObject);
-			JsonNode targetJsonNode = sync(sourceJsonNode, operations);
+			JsonNode targetJsonNode = merge(sourceJsonNode, operations);
 			
 			targetObject = (T) objectMapper.treeToValue(targetJsonNode, sourceObject.getClass());
 		} catch (JsonProcessingException e) {

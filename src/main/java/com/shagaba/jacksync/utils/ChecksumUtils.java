@@ -5,8 +5,6 @@ import java.util.Objects;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-import com.google.common.base.Strings;
-
 /**
  * Utility methods to compute and validate checksums.
  * 
@@ -23,7 +21,7 @@ public class ChecksumUtils {
 	 * @return a checksum value for the given string.
 	 */
 	public static String computeChecksum(String string) {
-		if (Strings.isNullOrEmpty(string)) {
+		if (string == null || string.isEmpty()) {
 			throw new IllegalArgumentException("Input string cannot be null or empty");
 		}
 		try {
@@ -56,10 +54,10 @@ public class ChecksumUtils {
 	 * @return
 	 */
 	public static boolean verifyChecksum(String string, String receivedChecksum) {
-		if (Strings.isNullOrEmpty(string)) {
+		if (string == null || string.isEmpty()) {
 			throw new IllegalArgumentException("Input string cannot be null or empty");
 		}
-		if (Strings.isNullOrEmpty(receivedChecksum)) {
+		if (receivedChecksum == null || receivedChecksum.isEmpty()) {
 			throw new IllegalArgumentException("Checksum cannot be null or empty");
 		}
 		String checksum = computeChecksum(string);
@@ -75,7 +73,7 @@ public class ChecksumUtils {
 	 * @return
 	 */
 	public static boolean verifyChecksum(byte[] byteArray, String receivedChecksum) {
-		if (Strings.isNullOrEmpty(receivedChecksum)) {
+		if (receivedChecksum == null || receivedChecksum.isEmpty()) {
 			throw new IllegalArgumentException("checksum cannot be null or empty");
 		}
 		String checksum = computeChecksum(byteArray);

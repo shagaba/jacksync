@@ -80,7 +80,7 @@ public class CopyOperationTest {
     	String copyMe = "please copy me";
     	Post postV1 = new Post();
     	postV1.setTags(Arrays.asList("tag1", "tag2", copyMe, "tag3"));
-    	postV1.setCategories(Arrays.asList());
+    	postV1.setCategories(new ArrayList<String>());
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
         CopyOperation copyOperation = new CopyOperation("/tags/2", "/categories/0");

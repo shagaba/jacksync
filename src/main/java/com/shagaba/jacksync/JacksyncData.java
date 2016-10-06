@@ -2,11 +2,11 @@ package com.shagaba.jacksync;
 
 import java.util.List;
 
-public class SyncCapsule {
+public class JacksyncData {
 	
 	private Long version;
 	
-	private Long approvedVersion;
+	private Long masterVersion;
 	
 	private String targetChecksum;
 	
@@ -27,17 +27,17 @@ public class SyncCapsule {
 	}
 
 	/**
-	 * @return the approvedVersion
+	 * @return the masterVersion
 	 */
-	public Long getApprovedVersion() {
-		return approvedVersion;
+	public Long getMasterVersion() {
+		return masterVersion;
 	}
 
 	/**
-	 * @param approvedVersion the approvedVersion to set
+	 * @param masterVersion the masterVersion to set
 	 */
-	public void setApprovedVersion(Long approvedVersion) {
-		this.approvedVersion = approvedVersion;
+	public void setMasterVersion(Long masterVersion) {
+		this.masterVersion = masterVersion;
 	}
 
 	/**

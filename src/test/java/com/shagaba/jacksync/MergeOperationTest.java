@@ -60,7 +60,7 @@ public class MergeOperationTest {
     	Post postV1_1 = new Post();
     	postV1_1.setTitle(title);
 
-        MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
+        MergeOperation mergeOperation = new MergeOperation("/", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
         // read action

@@ -1,12 +1,12 @@
 package com.shagaba.jacksync.diff.processor;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 import com.shagaba.jacksync.AddOperation;
 import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.RemoveOperation;
@@ -23,7 +23,7 @@ public class SimpleDiffProcessor implements DiffProcessor {
 	 */
 	@Override
 	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) {
-		List<PatchOperation> operations = Lists.newArrayList();
+		List<PatchOperation> operations = new ArrayList<>();
 		return diff(sourceJsonNode, targetJsonNode, operations, JsonPointer.compile("/"));
 	}
 
@@ -39,8 +39,16 @@ public class SimpleDiffProcessor implements DiffProcessor {
 		if (!Objects.equals(sourceJsonNode, targetJsonNode)) {
 
 			if (sourceJsonNode.isArray() && targetJsonNode.isArray()) {
-				List<JsonNode> commonNodes = Lists.newArrayList(sourceJsonNode);
-				List<JsonNode> targetNodes = Lists.newArrayList(targetJsonNode);
+				List<JsonNode> commonNodes = new ArrayList<>();
+				for (Iterator<JsonNode> iterator = sourceJsonNode.iterator(); iterator.hasNext();) {
+					commonNodes.add(iterator.next());
+				}
+				
+				List<JsonNode> targetNodes = new ArrayList<>();
+				for (Iterator<JsonNode> iterator = targetJsonNode.iterator(); iterator.hasNext();) {
+					targetNodes.add(iterator.next());
+				}
+				
 				commonNodes.retainAll(targetNodes);
 				
 				int commonIndex = 0;

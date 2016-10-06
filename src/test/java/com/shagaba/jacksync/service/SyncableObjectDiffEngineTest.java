@@ -12,9 +12,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.shagaba.jacksync.SyncCapsule;
-import com.shagaba.jacksync.diff.SyncableObjectDiffEngine;
-import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
+import com.shagaba.jacksync.JacksyncData;
+import com.shagaba.jacksync.diff.JacksyncDiffEngine;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;
@@ -22,7 +21,7 @@ import com.shagaba.jacksync.post.dto.Section;
 public class SyncableObjectDiffEngineTest {
 	
 	private ObjectMapper mapper;
-	private SyncableObjectDiffEngine diffEngine;
+	private JacksyncDiffEngine diffEngine;
 	private LocalSyncService localSyncService;
 	
 
@@ -52,7 +51,7 @@ public class SyncableObjectDiffEngineTest {
     public void beforeEach() {
     	mapper = newObjectMapper();
     	
-    	diffEngine = new SyncableObjectDiffEngine(mapper);
+    	diffEngine = new JacksyncDiffEngine(mapper);
         
         localSyncService = new LocalSyncService(mapper);
     }
@@ -81,12 +80,11 @@ public class SyncableObjectDiffEngineTest {
     	postV1_1.getSections().add(new Section("section-4", null));
 
     	// SyncCapsule regular diff
-        SyncCapsule syncCapsule = diffEngine.diff(postV1, postV1_1);
-        Post postV1_2 = localSyncService.clientSync(postV1, syncCapsule);
+        JacksyncData jacksyncData = diffEngine.diff(postV1, postV1_1);
+        Post postV1_2 = localSyncService.clientSync(postV1, jacksyncData);
         
         // SyncCapsule with merge operations 
-        diffEngine.setDiffProcessor(new MergeOperationDiffProcessor());
-        SyncCapsule syncCapsule2 = diffEngine.diff(postV1, postV1_1);
+        JacksyncData syncCapsule2 = diffEngine.diff(postV1, postV1_1);
         Post postV1_21 = localSyncService.clientSync(postV1, syncCapsule2);
         
         

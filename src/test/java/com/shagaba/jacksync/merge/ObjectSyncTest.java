@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.sync;
+package com.shagaba.jacksync.merge;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -14,14 +14,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.shagaba.jacksync.AddOperation;
 import com.shagaba.jacksync.ReplaceOperation;
-import com.shagaba.jacksync.SyncCapsule;
+import com.shagaba.jacksync.merge.ObjectMerger;
+import com.shagaba.jacksync.JacksyncData;
+import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.post.dto.Post;
 
-public class LocalObjectSyncTest {
+public class ObjectSyncTest {
 
 	private ObjectMapper mapper = null;
 
-	private LocalObjectSync localObjectSync = null;
+	private ObjectMerger objectMerger = null;
 	
     public ObjectMapper newObjectMapper() {
         ObjectMapper jacksonObjectMapper = new ObjectMapper();
@@ -48,7 +50,7 @@ public class LocalObjectSyncTest {
     @Before
     public void beforeEach() {
     	mapper = newObjectMapper();
-    	localObjectSync = new LocalObjectSync(mapper);
+    	objectMerger = new ObjectMerger(mapper);
     }
 
     @Test
@@ -69,13 +71,12 @@ public class LocalObjectSyncTest {
     	targetPost.setVersion(1L);
 
     	// sync capsule & operations
-    	SyncCapsule syncCapsule = new SyncCapsule();
-    	syncCapsule.setVersion(1L);
+    	JacksyncData jacksyncData = new JacksyncData();
+    	jacksyncData.setVersion(1L);
     	// operations
     	AddOperation addOperation = new AddOperation("/title", mapper.valueToTree(targetPost.getTitle()));
-        
     	// server sync
-        Post postV2 = localObjectSync.sync(serverPostV1, Arrays.asList(addOperation));
+        Post postV2 = objectMerger.apply(serverPostV1, Arrays.asList((PatchOperation) addOperation));
         
         Assert.assertThat(postV2, equalTo(targetPost));
     }
@@ -99,15 +100,15 @@ public class LocalObjectSyncTest {
     	targetPost.setVersion(2L);
 
     	// sync capsule & operations
-    	SyncCapsule syncCapsule = new SyncCapsule();
-    	syncCapsule.setVersion(1L);
-    	syncCapsule.setApprovedVersion(2L);
+    	JacksyncData jacksyncData = new JacksyncData();
+    	jacksyncData.setVersion(1L);
+    	jacksyncData.setMasterVersion(2L);
     	// operations
     	AddOperation addOperation = new AddOperation("/title", mapper.valueToTree(targetPost.getTitle()));
     	ReplaceOperation replaceOperation = new ReplaceOperation("/version", mapper.valueToTree(2));
         
     	// server sync
-        Post postV2 = localObjectSync.sync(serverPostV1, Arrays.asList(addOperation, replaceOperation));
+        Post postV2 = objectMerger.apply(serverPostV1, Arrays.asList((PatchOperation) addOperation, (PatchOperation) replaceOperation));
         
         Assert.assertThat(postV2, equalTo(targetPost));
     }

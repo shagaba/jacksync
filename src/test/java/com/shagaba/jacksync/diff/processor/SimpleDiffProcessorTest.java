@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.service;
+package com.shagaba.jacksync.diff.processor;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -11,21 +11,22 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.diff.ObjectDiffEngine;
-import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
 import com.shagaba.jacksync.merge.ObjectMerger;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;
 
-public class ObjectDiffEngineTest {
-	
+public class SimpleDiffProcessorTest {
+
 	private ObjectMapper mapper;
-	private ObjectDiffEngine objectDiffEngine;
-	private ObjectMerger objectMerger;
+
+	private SimpleDiffProcessor simpleDiffProcessor;
+
 	
 
     public ObjectMapper newObjectMapper() {
@@ -54,9 +55,7 @@ public class ObjectDiffEngineTest {
     public void beforeEach() {
     	mapper = newObjectMapper();
     	
-    	objectDiffEngine = new ObjectDiffEngine(mapper, new MergeOperationDiffProcessor());
-        
-    	objectMerger = new ObjectMerger(mapper);
+    	simpleDiffProcessor = new SimpleDiffProcessor();
     }
 
     @Test
@@ -83,17 +82,15 @@ public class ObjectDiffEngineTest {
     	postV1_1.getSections().add(new Section("section-4", null));
 
     	// operations regular diff
-    	List<PatchOperation> operations = objectDiffEngine.diff(postV1, postV1_1);
-        Post postV1_2 = objectMerger.apply(postV1, operations);
-        
-        // SyncCapsule with merge operations 
-        List<PatchOperation> operations2 = objectDiffEngine.diff(postV1, postV1_1);
-        Post postV1_21 = objectMerger.apply(postV1, operations2);
-        
-        
-        Assert.assertThat(postV1_2, equalTo(postV1_1));
-        Assert.assertThat(postV1_21, equalTo(postV1_1));
-    }
+		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
+		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 
+		List<PatchOperation> operations = simpleDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+    	
+		System.out.println(operations);
+		
+//        Assert.assertThat(postV1_2, equalTo(postV1_1));
+//        Assert.assertThat(postV1_21, equalTo(postV1_1));
+    }
 
 }

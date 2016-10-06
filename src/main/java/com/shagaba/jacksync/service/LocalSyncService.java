@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shagaba.jacksync.PatchOperation;
-import com.shagaba.jacksync.SyncCapsule;
+import com.shagaba.jacksync.JacksyncData;
 import com.shagaba.jacksync.Syncable;
 import com.shagaba.jacksync.exception.ChecksumMismatchException;
 import com.shagaba.jacksync.exception.InvalidSyncVersionException;
@@ -49,40 +49,40 @@ public class LocalSyncService {
 	/**
 	 * 
 	 * @param sourceObject
-	 * @param syncCapsule
+	 * @param jacksyncData
 	 * @return
 	 */
-	public <T extends Syncable> T clientSync(T sourceObject, SyncCapsule syncCapsule) {
-		return sync(sourceObject, syncCapsule, true);
+	public <T extends Syncable> T clientSync(T sourceObject, JacksyncData jacksyncData) {
+		return sync(sourceObject, jacksyncData, true);
 	}
 	
 	/**
 	 * 
 	 * @param sourceObject
-	 * @param syncCapsule
+	 * @param jacksyncData
 	 * @return
 	 */
-	public <T extends Syncable> T serverSync(T sourceObject, SyncCapsule syncCapsule) {
-		return sync(sourceObject, syncCapsule, false);
+	public <T extends Syncable> T serverSync(T sourceObject, JacksyncData jacksyncData) {
+		return sync(sourceObject, jacksyncData, false);
 	}
 
 	/**
 	 * 
 	 * @param sourceObject
-	 * @param syncCapsule
+	 * @param jacksyncData
 	 * @param isClientSync
 	 * @return
 	 */
-	protected <T extends Syncable> T sync(T sourceObject, SyncCapsule syncCapsule, boolean isClientSync) {
+	protected <T extends Syncable> T sync(T sourceObject, JacksyncData jacksyncData, boolean isClientSync) {
 		// validate sourceObject version = syncCapsule version
-		if (!Objects.equals(sourceObject.getVersion(), syncCapsule.getVersion())) {
+		if (!Objects.equals(sourceObject.getVersion(), jacksyncData.getVersion())) {
 			throw new InvalidSyncVersionException("Sync Version Mismatch");
 		}
 		
-		T targetObject = sync(sourceObject, syncCapsule);
+		T targetObject = sync(sourceObject, jacksyncData);
 		
 		// validate targetObject version = target version
-		Long targetVersion = isClientSync ? syncCapsule.getApprovedVersion() : sourceObject.getVersion();
+		Long targetVersion = isClientSync ? jacksyncData.getMasterVersion() : sourceObject.getVersion();
 		if (!Objects.equals(targetObject.getVersion(), targetVersion)) {
 			throw new InvalidSyncVersionException("Target Version Mismatch");
 		}
@@ -92,20 +92,20 @@ public class LocalSyncService {
 	/**
 	 * 
 	 * @param sourceObject
-	 * @param syncCapsule
+	 * @param jacksyncData
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T sync(T sourceObject, SyncCapsule syncCapsule) {
+	protected <T> T sync(T sourceObject, JacksyncData jacksyncData) {
 		T targetObject = null;
 		try {
 			JsonNode sourceJsonNode = objectMapper.valueToTree(sourceObject);
-			JsonNode targetJsonNode = sync(sourceJsonNode, syncCapsule.getOperations());
+			JsonNode targetJsonNode = sync(sourceJsonNode, jacksyncData.getOperations());
 			
 			// verifyChecksum
 			targetObject = (T) objectMapper.treeToValue(targetJsonNode, sourceObject.getClass());
 			String targetJson = objectMapper.writeValueAsString(targetObject);
-			boolean isChecksumValid =  ChecksumUtils.verifyChecksum(targetJson, syncCapsule.getTargetChecksum());
+			boolean isChecksumValid =  ChecksumUtils.verifyChecksum(targetJson, jacksyncData.getTargetChecksum());
 			if (!isChecksumValid) {
 				throw new ChecksumMismatchException("Checksum on target does not match checksum on sync capsule");
 			}

@@ -1,8 +1,9 @@
-package com.shagaba.jacksync.sync;
+package com.shagaba.jacksync.merge;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,16 +14,20 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.shagaba.jacksync.AddOperation;
+import com.shagaba.jacksync.JacksyncData;
+import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.ReplaceOperation;
-import com.shagaba.jacksync.SyncCapsule;
+import com.shagaba.jacksync.merge.JacksyncDataMasterMerger;
+import com.shagaba.jacksync.merge.JacksyncDataMerger;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.utils.ChecksumUtils;
 
-public class LocalSyncableObjectSyncTest {
+public class AbstractSyncableSyncTest {
 
-	private ObjectMapper mapper = null;
+	private ObjectMapper objectMapper = null;
 
-	private LocalSyncableObjectSync localSyncableObjectSync = null;
+	private JacksyncDataMerger jacksyncDataMasterMerger = null;
+	private JacksyncDataMerger jacksyncDataClientMerger = null;
 	
     public ObjectMapper newObjectMapper() {
         ObjectMapper jacksonObjectMapper = new ObjectMapper();
@@ -48,8 +53,9 @@ public class LocalSyncableObjectSyncTest {
     
     @Before
     public void beforeEach() {
-    	mapper = newObjectMapper();
-    	localSyncableObjectSync = new LocalSyncableObjectSync(mapper);
+    	objectMapper = newObjectMapper();
+    	jacksyncDataMasterMerger = new JacksyncDataMasterMerger(objectMapper);
+    	jacksyncDataClientMerger = new JacksyncDataClientMerger(objectMapper);
     }
 
     @Test
@@ -70,16 +76,16 @@ public class LocalSyncableObjectSyncTest {
     	targetPost.setVersion(1L);
 
     	// sync capsule & operations
-    	SyncCapsule syncCapsule = new SyncCapsule();
-    	syncCapsule.setVersion(1L);
+    	JacksyncData jacksyncData = new JacksyncData();
+    	jacksyncData.setVersion(1L);
     	// operations
-    	AddOperation addOperation = new AddOperation("/title", mapper.valueToTree(targetPost.getTitle()));
-        syncCapsule.setOperations(Arrays.asList(addOperation));
+    	AddOperation addOperation = new AddOperation("/title", objectMapper.valueToTree(targetPost.getTitle()));
+        jacksyncData.setOperations(Arrays.asList((PatchOperation) addOperation));
     	// target checksum
-    	syncCapsule.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
+    	jacksyncData.setTargetChecksum(ChecksumUtils.computeChecksum(objectMapper.writeValueAsString(targetPost)));
         
     	// server sync
-        Post postV2 = localSyncableObjectSync.serverSync(serverPostV1, syncCapsule);
+        Post postV2 = jacksyncDataMasterMerger.apply(serverPostV1, jacksyncData);
         
         Assert.assertThat(postV2, equalTo(targetPost));
     }
@@ -103,18 +109,19 @@ public class LocalSyncableObjectSyncTest {
     	targetPost.setVersion(2L);
 
     	// sync capsule & operations
-    	SyncCapsule syncCapsule = new SyncCapsule();
-    	syncCapsule.setVersion(1L);
-    	syncCapsule.setApprovedVersion(2L);
+    	JacksyncData jacksyncData = new JacksyncData();
+    	jacksyncData.setVersion(1L);
+    	jacksyncData.setMasterVersion(2L);
     	// operations
-    	AddOperation addOperation = new AddOperation("/title", mapper.valueToTree(targetPost.getTitle()));
-    	ReplaceOperation replaceOperation = new ReplaceOperation("/version", mapper.valueToTree(2));
-        syncCapsule.setOperations(Arrays.asList(addOperation, replaceOperation));
+    	AddOperation addOperation = new AddOperation("/title", objectMapper.valueToTree(targetPost.getTitle()));
+    	ReplaceOperation replaceOperation = new ReplaceOperation("/version", objectMapper.valueToTree(2));
+    	List<PatchOperation> operations = Arrays.asList((PatchOperation) addOperation, (PatchOperation) replaceOperation);
+        jacksyncData.setOperations(operations);
     	// target checksum
-    	syncCapsule.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
+    	jacksyncData.setTargetChecksum(ChecksumUtils.computeChecksum(objectMapper.writeValueAsString(targetPost)));
         
     	// server sync
-        Post postV2 = localSyncableObjectSync.clientSync(clientPostV1, syncCapsule);
+        Post postV2 = jacksyncDataClientMerger.apply(clientPostV1, jacksyncData);
         
         Assert.assertThat(postV2, equalTo(targetPost));
     }

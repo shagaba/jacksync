@@ -1,9 +1,19 @@
 package com.shagaba.jacksync.diff;
 
+import java.util.List;
+
+import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.exception.JacksyncDiffException;
 
-public interface DiffEngine<R, E> {
+public interface DiffEngine {
 	
-	public <T extends E> R diff(T source, T target) throws JacksyncDiffException;
+	/**
+	 * 
+	 * @param source
+	 * @param target
+	 * @return
+	 * @throws JacksyncDiffException
+	 */
+	public <T> List<PatchOperation> diff(T source, T target) throws JacksyncDiffException;
 
 }

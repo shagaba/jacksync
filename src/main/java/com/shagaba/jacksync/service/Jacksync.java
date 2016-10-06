@@ -103,8 +103,7 @@ public class Jacksync {
 		 * @param diffProcessor the diffProcessor to set
 		 */
 		public JacksyncBuilder diffProcessor(DiffProcessor diffProcessor) {
-			this.objectDiffEngine = new ObjectDiffEngine(objectMapper);
-			objectDiffEngine.setDiffProcessor(diffProcessor);
+			this.objectDiffEngine = new ObjectDiffEngine(objectMapper, diffProcessor);
 			return jacksyncBuilder;
 		}
 		
@@ -112,8 +111,7 @@ public class Jacksync {
 		 * mergeOperationDiffProcessor to set
 		 */
 		public JacksyncBuilder mergeOperationDiffProcessor() {
-			this.objectDiffEngine = new ObjectDiffEngine(objectMapper);
-			objectDiffEngine.setDiffProcessor(new MergeOperationDiffProcessor());
+			this.objectDiffEngine = new ObjectDiffEngine(objectMapper, new MergeOperationDiffProcessor());
 			return jacksyncBuilder;
 		}
 		
@@ -121,8 +119,7 @@ public class Jacksync {
 		 * @param diffProcessor the diffProcessor to set
 		 */
 		public JacksyncBuilder simpleDiffProcessor() {
-			this.objectDiffEngine = new ObjectDiffEngine(objectMapper);
-			objectDiffEngine.setDiffProcessor(new SimpleDiffProcessor());
+			this.objectDiffEngine = new ObjectDiffEngine(objectMapper, new SimpleDiffProcessor());
 			return jacksyncBuilder;
 		}
 		

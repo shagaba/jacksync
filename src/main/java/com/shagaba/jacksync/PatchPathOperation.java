@@ -14,6 +14,8 @@ import com.shagaba.jacksync.utils.JsonPointerDeserializer;
  */
 public abstract class PatchPathOperation extends PatchOperation {
 	
+    protected static final String PATH_SEPARATOR = "/";
+
     protected JsonPointer path;
 
 	/**
@@ -40,7 +42,11 @@ public abstract class PatchPathOperation extends PatchOperation {
 	public PatchPathOperation(String path) {
 		super();
 		basicPathChecks(path);
-		this.path = JsonPointer.compile(path);
+		if (PATH_SEPARATOR.equals(path.trim())) {
+			this.path = JsonPointer.compile("");
+		} else {
+			this.path = JsonPointer.compile(path);
+		}
 	}
 
 	/**

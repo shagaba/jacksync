@@ -8,11 +8,11 @@ import com.shagaba.jacksync.PatchOperation;
 import com.shagaba.jacksync.diff.processor.DiffProcessor;
 import com.shagaba.jacksync.diff.processor.SimpleDiffProcessor;
 
-public class ObjectDiffEngine implements DiffEngine<List<PatchOperation>, Object>{
+public class ObjectDiffEngine implements DiffEngine {
 	
-	private ObjectMapper objectMapper;
+	protected ObjectMapper objectMapper;
 	
-	private DiffProcessor diffProcessor;
+	protected DiffProcessor diffProcessor;
 	
 	/**
 	 * @param objectMapper
@@ -21,35 +21,17 @@ public class ObjectDiffEngine implements DiffEngine<List<PatchOperation>, Object
 		this.objectMapper = objectMapper;
 		this.diffProcessor = new SimpleDiffProcessor();
 	}
-	
-	/**
-	 * @return the objectMapper
-	 */
-	public ObjectMapper getObjectMapper() {
-		return objectMapper;
-	}
 
 	/**
-	 * @param objectMapper the objectMapper to set
+	 * 
+	 * @param objectMapper
+	 * @param diffProcessor
 	 */
-	public void setObjectMapper(ObjectMapper objectMapper) {
+	public ObjectDiffEngine(ObjectMapper objectMapper, DiffProcessor diffProcessor) {
 		this.objectMapper = objectMapper;
-	}
-
-	/**
-	 * @return the diffProcessor
-	 */
-	public DiffProcessor getDiffProcessor() {
-		return diffProcessor;
-	}
-
-	/**
-	 * @param diffProcessor the diffProcessor to set
-	 */
-	public void setDiffProcessor(DiffProcessor diffProcessor) {
 		this.diffProcessor = diffProcessor;
 	}
-
+	
 	/**
 	 * 
 	 * @param source

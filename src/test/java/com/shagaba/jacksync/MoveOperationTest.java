@@ -80,7 +80,7 @@ public class MoveOperationTest {
     	String moveMe = "please move me";
     	Post postV1 = new Post();
     	postV1.setTags(Arrays.asList("tag1", "tag2", moveMe, "tag3"));
-    	postV1.setCategories(Arrays.asList());
+    	postV1.setCategories(new ArrayList<String>());
         JsonNode postV1Node = mapper.valueToTree(postV1);
 
         MoveOperation moveOperation = new MoveOperation("/tags/2", "/categories/0");
