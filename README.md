@@ -12,7 +12,7 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 * allows you to update a JSON document by sending the changes rather than the whole document.
 * enables simple commit and audit all JSON Patch changes in your data, and later on browse the detailed change history.
 
-### Sync Capsule Structure
+### Jacksync Data Structure
 * version - client received version.
 * approvedVersion - server version after committing all patch operations.
 * targetChecksum - target object after applying all patch operations.
@@ -21,10 +21,10 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 ```json
 {
 	"version" : 5,
-	"approvedVersion" : 6,
+	"masterVersion" : 6,
 	"targetChecksum" : "Checksum",
 	"operations" : [
-		{ "op" : "replace", "path" : "/title", "value" : "How To Use Sync Capsule" },
+		{ "op" : "replace", "path" : "/title", "value" : "How To Use Jacksync Data" },
 		{ "op" : "add", "path" : "/author", "value" : "shagaba" },
 		{ "op" : "add", "path" : "/tags/3", "value" : "sync" },
 		{ "op" : "replace", "path" : "/version", "value" : 6 },
@@ -127,10 +127,14 @@ Here, "equal" means that the value at the target location and the value conveyed
 }
 ```
 
-## Operations Inspired by RFC 7386 (JSON Merge Patch) :
+## Jacksync Operation Inspired by both RFC 6902 (JSON Patch) and RFC 7386 (JSON Merge Patch) :
 
 **Merge**
 
+The "merge" operation merge a JSON merge patch document value at the target location value.
+The "merge" operation is unique to Jacksync project inspired by both RFC 6902 (JSON Patch) and RFC 7386 (JSON Merge Patch)
+The operation object MUST contain a "value" member which is a JSON merge patch document.
+The target location MUST exist for the operation to be successful.
 A JSON merge patch document describes changes to be made to a target JSON document using a syntax that closely mimics the document being modified.
 * Recipients of a merge patch document determine the exact set of changes being requested by comparing the content of the provided patch against the current content of the target document.
 * If the provided merge patch contains members that do not appear within the target, those members are added.
