@@ -22,13 +22,13 @@ public class ObjectMerger implements PatchOperationsMerger {
 	/**
 	 * 
 	 * @param currentJsonNode
-	 * @param actions
+	 * @param operations
 	 * @return
 	 */
-	protected JsonNode merge(JsonNode currentJsonNode, List<PatchOperation> actions) {
+	protected JsonNode merge(JsonNode currentJsonNode, List<PatchOperation> operations) {
 		JsonNode syncdJsonNode = currentJsonNode.deepCopy();
-		for (PatchOperation action : actions) {
-			syncdJsonNode = action.apply(syncdJsonNode);
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		return syncdJsonNode;
 	}
@@ -36,7 +36,7 @@ public class ObjectMerger implements PatchOperationsMerger {
 	/**
 	 * 
 	 * @param sourceObject
-	 * @param syncCapsule
+	 * @param operations
 	 * @return
 	 */
 	@Override

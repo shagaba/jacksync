@@ -39,7 +39,7 @@ public class ObjectDiffEngine implements DiffEngine {
 	 * @return
 	 */
 	@Override
-	public <T extends Object> List<PatchOperation> diff(T source, T target) {
+	public <T> List<PatchOperation> diff(T source, T target) {
 		JsonNode sourceJsonNode = objectMapper.valueToTree(source);
 		JsonNode targetJsonNode = objectMapper.valueToTree(target);
 		return diffProcessor.diff(sourceJsonNode, targetJsonNode);

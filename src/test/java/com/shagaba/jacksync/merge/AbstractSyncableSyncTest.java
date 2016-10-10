@@ -75,7 +75,7 @@ public class AbstractSyncableSyncTest {
     	targetPost.setTitle(clientPostV1.getTitle());
     	targetPost.setVersion(1L);
 
-    	// sync capsule & operations
+    	// sync jacksyncData & operations
     	JacksyncData jacksyncData = new JacksyncData();
     	jacksyncData.setVersion(1L);
     	// operations
@@ -108,7 +108,7 @@ public class AbstractSyncableSyncTest {
     	targetPost.setTitle(serverPostV1.getTitle());
     	targetPost.setVersion(2L);
 
-    	// sync capsule & operations
+    	// sync jacksyncData & operations
     	JacksyncData jacksyncData = new JacksyncData();
     	jacksyncData.setVersion(1L);
     	jacksyncData.setMasterVersion(2L);

@@ -49,7 +49,7 @@ public abstract class AbstractJacksyncDataMerger implements JacksyncDataMerger {
 	 * @return
 	 */
 	protected <T extends Syncable> T merge(T sourceObject, JacksyncData jacksyncData, Long targetVersion) {
-		// validate sourceObject version = syncCapsule version
+		// validate sourceObject version = jacksyncData version
 		if (!Objects.equals(sourceObject.getVersion(), jacksyncData.getVersion())) {
 			throw new InvalidSyncVersionException("Sync Version Mismatch");
 		}
@@ -62,7 +62,7 @@ public abstract class AbstractJacksyncDataMerger implements JacksyncDataMerger {
 				String targetJson = objectMapper.writeValueAsString(targetObject);
 				boolean isChecksumValid =  ChecksumUtils.verifyChecksum(targetJson, jacksyncData.getTargetChecksum());
 				if (!isChecksumValid) {
-					throw new ChecksumMismatchException("Checksum on target does not match checksum on sync capsule");
+					throw new ChecksumMismatchException("Checksum on target does not match checksum on JacksyncData");
 				}
 			} catch (JsonProcessingException e) {
 				throw new SyncProcessingException(e);

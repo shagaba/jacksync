@@ -83,7 +83,7 @@ public class JacksyncTest {
     	postV1_1.getSections().add(new Section("section-X", null));
     	postV1_1.getSections().add(new Section("section-4", null));
 
-//    	// SyncCapsule regular diff
+//    	// JacksyncData regular diff
 //        SyncCapsule syncCapsule = jacksync.getDiffMapper().diff(postV1, postV1_1);
 //        Post postV1_2 = jacksync.getLocalSyncService().clientSync(postV1, syncCapsule);
 //        

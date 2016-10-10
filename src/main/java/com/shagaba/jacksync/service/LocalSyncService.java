@@ -74,7 +74,7 @@ public class LocalSyncService {
 	 * @return
 	 */
 	protected <T extends Syncable> T sync(T sourceObject, JacksyncData jacksyncData, boolean isClientSync) {
-		// validate sourceObject version = syncCapsule version
+		// validate sourceObject version = jacksyncData version
 		if (!Objects.equals(sourceObject.getVersion(), jacksyncData.getVersion())) {
 			throw new InvalidSyncVersionException("Sync Version Mismatch");
 		}
@@ -107,7 +107,7 @@ public class LocalSyncService {
 			String targetJson = objectMapper.writeValueAsString(targetObject);
 			boolean isChecksumValid =  ChecksumUtils.verifyChecksum(targetJson, jacksyncData.getTargetChecksum());
 			if (!isChecksumValid) {
-				throw new ChecksumMismatchException("Checksum on target does not match checksum on sync capsule");
+				throw new ChecksumMismatchException("Checksum on target does not match checksum on sync jacksyncData");
 			}
 			
 		} catch (JsonProcessingException e) {
@@ -119,13 +119,13 @@ public class LocalSyncService {
 	/**
 	 * 
 	 * @param currentJsonNode
-	 * @param actions
+	 * @param operations
 	 * @return
 	 */
-	protected JsonNode sync(JsonNode currentJsonNode, List<PatchOperation> actions) {
+	protected JsonNode sync(JsonNode currentJsonNode, List<PatchOperation> operations) {
 		JsonNode syncdJsonNode = currentJsonNode.deepCopy();
-		for (PatchOperation action : actions) {
-			syncdJsonNode = action.apply(syncdJsonNode);
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		return syncdJsonNode;
 	}
