@@ -61,9 +61,9 @@ public class RemoveOperationTest {
         RemoveOperation removeOperation = new RemoveOperation("/title");
         String removeValueJson = mapper.writeValueAsString(removeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(removeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(removeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getTitle(), equalTo(null));
@@ -79,9 +79,9 @@ public class RemoveOperationTest {
         RemoveOperation removeOperation = new RemoveOperation("/author");
         String removeValueJson = mapper.writeValueAsString(removeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(removeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(removeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getAuthor(), equalTo(null));
@@ -97,9 +97,9 @@ public class RemoveOperationTest {
         RemoveOperation removeOperation = new RemoveOperation("/author/firstName");
         String removeValueJson = mapper.writeValueAsString(removeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(removeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(removeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getAuthor().getFirstName(), equalTo(null));
@@ -117,9 +117,9 @@ public class RemoveOperationTest {
         RemoveOperation removeOperation = new RemoveOperation("/sections/1");
         String removeValueJson = mapper.writeValueAsString(removeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(removeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(removeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(2));
@@ -140,9 +140,9 @@ public class RemoveOperationTest {
         RemoveOperation removeOperation = new RemoveOperation("/sections/3");
         String removeValueJson = mapper.writeValueAsString(removeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(removeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(removeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(3));

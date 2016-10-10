@@ -29,9 +29,7 @@ import com.shagaba.jacksync.utils.JacksonUtils;
  * @author Shagaba
  *
  */
-public class ReplaceOperation extends PatchPathOperation {
-
-	private JsonNode value;
+public class ReplaceOperation extends PatchPathValueOperation {
 
 	/**
 	 * Constructs the replace operation
@@ -47,8 +45,7 @@ public class ReplaceOperation extends PatchPathOperation {
 	 * @param value the value to replace.
 	 */
 	public ReplaceOperation(JsonPointer path, JsonNode value) {
-		super(path);
-		this.value = value;
+		super(path, value);
 	}
 
 	/**
@@ -58,22 +55,7 @@ public class ReplaceOperation extends PatchPathOperation {
 	 * @param value the value to replace.
 	 */
 	public ReplaceOperation(String path, JsonNode value) {
-		super(path);
-		this.value = value;
-	}
-
-	/**
-	 * @return the value
-	 */
-	public JsonNode getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(JsonNode value) {
-		this.value = value;
+		super(path, value);
 	}
 
 	@Override

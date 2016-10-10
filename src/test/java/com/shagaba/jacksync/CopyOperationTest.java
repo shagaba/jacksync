@@ -64,9 +64,9 @@ public class CopyOperationTest {
         CopyOperation copyOperation = new CopyOperation("/title", "/author/firstName");
         String addValueJson = mapper.writeValueAsString(copyOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(addValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getTitle(), equalTo(copyMe));
@@ -86,9 +86,9 @@ public class CopyOperationTest {
         CopyOperation copyOperation = new CopyOperation("/tags/2", "/categories/0");
         String addValueJson = mapper.writeValueAsString(copyOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(addValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getCategories().get(0), equalTo(copyMe));
@@ -111,9 +111,9 @@ public class CopyOperationTest {
         CopyOperation copyOperation = new CopyOperation("/sections/1", "/sections/3");
         String addValueJson = mapper.writeValueAsString(copyOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(addValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(6));
@@ -134,9 +134,9 @@ public class CopyOperationTest {
         CopyOperation copyOperation = new CopyOperation("/sections/1", "/sections/-");
         String addValueJson = mapper.writeValueAsString(copyOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(addValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(6));

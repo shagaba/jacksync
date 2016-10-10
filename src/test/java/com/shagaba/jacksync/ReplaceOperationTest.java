@@ -61,9 +61,9 @@ public class ReplaceOperationTest {
         ReplaceOperation replaceOperation = new ReplaceOperation("/title", mapper.valueToTree(title));
         String replaceValueJson = mapper.writeValueAsString(replaceOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(replaceValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(replaceValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getTitle(), equalTo(title));
@@ -80,9 +80,9 @@ public class ReplaceOperationTest {
         ReplaceOperation replaceOperation = new ReplaceOperation("/author", mapper.valueToTree(author));
         String replaceValueJson = mapper.writeValueAsString(replaceOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(replaceValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(replaceValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getAuthor(), equalTo(author));
@@ -99,9 +99,9 @@ public class ReplaceOperationTest {
         ReplaceOperation replaceOperation = new ReplaceOperation("/author/firstName", mapper.valueToTree(firstName));
         String replaceValueJson = mapper.writeValueAsString(replaceOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(replaceValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(replaceValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getAuthor().getFirstName(), equalTo(firstName));
@@ -124,9 +124,9 @@ public class ReplaceOperationTest {
         ReplaceOperation replaceOperation = new ReplaceOperation("/sections/2", mapper.valueToTree(section3));
         String replaceValueJson = mapper.writeValueAsString(replaceOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(replaceValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(replaceValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(5));
@@ -148,9 +148,9 @@ public class ReplaceOperationTest {
         ReplaceOperation replaceOperation = new ReplaceOperation("/sections/4", mapper.valueToTree(section5));
         String replaceValueJson = mapper.writeValueAsString(replaceOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(replaceValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(replaceValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(5));

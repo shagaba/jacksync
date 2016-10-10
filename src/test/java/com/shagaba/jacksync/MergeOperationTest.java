@@ -63,9 +63,9 @@ public class MergeOperationTest {
         MergeOperation mergeOperation = new MergeOperation("/", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(mergeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getTitle(), equalTo(title));
@@ -83,9 +83,9 @@ public class MergeOperationTest {
         MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(mergeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2.getAuthor(), equalTo(author));
@@ -100,9 +100,9 @@ public class MergeOperationTest {
         MergeOperation mergeOperation = new MergeOperation("", mapper.readTree("{\"author\":{\"firstName\":\"james\"}}"));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(mergeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getAuthor().getFirstName(), equalTo("james"));
@@ -117,9 +117,9 @@ public class MergeOperationTest {
         MergeOperation mergeOperation = new MergeOperation("", mapper.readTree("{\"author\":{\"firstName\":null}}"));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(mergeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getAuthor().getFirstName(), equalTo(null));
@@ -147,9 +147,9 @@ public class MergeOperationTest {
         MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(mergeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(5));
@@ -178,9 +178,9 @@ public class MergeOperationTest {
         MergeOperation mergeOperation = new MergeOperation("", mapper.valueToTree(postV1_1));
         String mergeValueJson = mapper.writeValueAsString(mergeOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(mergeValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getSections().size(), equalTo(5));

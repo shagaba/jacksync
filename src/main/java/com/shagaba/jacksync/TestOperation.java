@@ -46,12 +46,9 @@ import com.shagaba.jacksync.utils.JacksonUtils;
  * 
  * { "op": "test", "path": "/a/b/c", "value": "foo" }.
  * 
- * 
  * @author Shagaba
  *
- */public class TestOperation extends PatchPathOperation {
-
-    private JsonNode value;
+ */public class TestOperation extends PatchPathValueOperation {
 
 	/**
 	 * Constructs the test operation
@@ -67,8 +64,7 @@ import com.shagaba.jacksync.utils.JacksonUtils;
 	 * @param value the value to test.
 	 */
 	public TestOperation(JsonPointer path, JsonNode value) {
-		super(path);
-		this.value = value;
+		super(path, value);
 	}
 
 	/**
@@ -78,22 +74,7 @@ import com.shagaba.jacksync.utils.JacksonUtils;
 	 * @param value the value to test.
 	 */
 	public TestOperation(String path, JsonNode value) {
-		super(path);
-		this.value = value;
-	}
-
-	/**
-	 * @return the value
-	 */
-	public JsonNode getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(JsonNode value) {
-		this.value = value;
+		super(path, value);
 	}
 
 	@Override

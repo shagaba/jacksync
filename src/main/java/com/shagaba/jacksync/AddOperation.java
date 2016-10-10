@@ -53,9 +53,7 @@ import com.shagaba.jacksync.utils.JacksonUtils;
  * @author Shagaba
  *
  */
-public class AddOperation extends PatchPathOperation {
-
-	private JsonNode value;
+public class AddOperation extends PatchPathValueOperation {
 
 	/**
 	 * Constructs the add operation
@@ -72,8 +70,7 @@ public class AddOperation extends PatchPathOperation {
 	 * @param value the value to add.
 	 */
 	public AddOperation(JsonPointer path, JsonNode value) {
-		super(path);
-		this.value = value;
+		super(path, value);
 	}
 
 	/**
@@ -83,22 +80,7 @@ public class AddOperation extends PatchPathOperation {
 	 * @param value the value to add.
 	 */
 	public AddOperation(String path, JsonNode value) {
-		super(path);
-		this.value = value;
-	}
-
-	/**
-	 * @return the value to add.
-	 */
-	public JsonNode getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value the value to add.
-	 */
-	public void setValue(JsonNode value) {
-		this.value = value;
+		super(path, value);
 	}
 
 	@Override

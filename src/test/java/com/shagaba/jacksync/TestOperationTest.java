@@ -62,9 +62,9 @@ public class TestOperationTest {
         TestOperation testOperation = new TestOperation("/title", mapper.valueToTree(title));
         String testValueJson = mapper.writeValueAsString(testOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(testValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(testValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2, equalTo(postV1));
@@ -80,9 +80,9 @@ public class TestOperationTest {
         TestOperation testOperation = new TestOperation("/title", mapper.valueToTree(title));
         String testValueJson = mapper.writeValueAsString(testOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(testValueJson, PatchOperation.class);
-        action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(testValueJson, PatchOperation.class);
+        operation.apply(postV1Node);
     }
 
     @Test
@@ -95,9 +95,9 @@ public class TestOperationTest {
         TestOperation testOperation = new TestOperation("/tags/2", mapper.valueToTree(testMe));
         String testValueJson = mapper.writeValueAsString(testOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(testValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(testValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2, equalTo(postV1));
@@ -113,9 +113,9 @@ public class TestOperationTest {
         TestOperation testOperation = new TestOperation("/tags/2", mapper.valueToTree(testMe));
         String testValueJson = mapper.writeValueAsString(testOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(testValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(testValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         mapper.treeToValue(postV2Node, Post.class);
     }
     
@@ -134,9 +134,9 @@ public class TestOperationTest {
         TestOperation testOperation = new TestOperation("/sections/1", mapper.valueToTree(section2));
         String testValueJson = mapper.writeValueAsString(testOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(testValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(testValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
         
         Assert.assertThat(postV2, equalTo(postV1));
@@ -157,9 +157,9 @@ public class TestOperationTest {
         TestOperation testOperation = new TestOperation("/sections/1", mapper.valueToTree(section2));
         String testValueJson = mapper.writeValueAsString(testOperation);
 
-        // read action
-        PatchOperation action = mapper.readValue(testValueJson, PatchOperation.class);
-        JsonNode postV2Node = action.apply(postV1Node);
+        // read operation
+        PatchOperation operation = mapper.readValue(testValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
         mapper.treeToValue(postV2Node, Post.class);
     }
 
