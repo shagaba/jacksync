@@ -1,6 +1,7 @@
 package com.shagaba.jacksync.diff.processor;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.shagaba.jacksync.PatchOperation;
-import com.shagaba.jacksync.diff.ObjectDiffEngine;
-import com.shagaba.jacksync.merge.ObjectMerger;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;
@@ -59,38 +58,157 @@ public class SimpleDiffProcessorTest {
     }
 
     @Test
-    public void addTitle() throws Exception {
-    	String title = "my test title";
+	public void addTitle() throws Exception {
+		Post postV1 = new Post();
+	
+		Post postV1_1 = new Post();
+		postV1_1.setTitle("my test title");
+	
+		// operations simple diff
+		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
+		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
+	
+		List<PatchOperation> operations = simpleDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+		
+	    Assert.assertThat(operations, hasSize(1));
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
+	}
+
+    @Test
+    public void addAuthor() throws Exception {
     	Post postV1 = new Post();
-    	postV1.setVersion(0L);
-//    	postV1.setTitle(title);
-    	postV1.setAuthor(new Author("1", "2", "3"));
+
+		Post postV1_1 = new Post();
+		postV1_1.setAuthor(new Author("james", "bond", "james.bond@007.com"));
+		
+		// operations simple diff
+		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
+		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
+	
+		List<PatchOperation> operations = simpleDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+
+	    Assert.assertThat(operations, hasSize(1));
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
+    }
+
+    @Test
+    public void addAuthorFirstName() throws Exception {
+    	Post postV1 = new Post();
+    	postV1.setAuthor(new Author());
+
+		Post postV1_1 = new Post();
+		postV1_1.setAuthor(new Author("james", null, null));
+
+		// operations simple diff
+		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
+		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
+	
+		List<PatchOperation> operations = simpleDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+
+	    Assert.assertThat(operations, hasSize(1));
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
+    }
+
+    @Test
+    public void addFirstSection() throws Exception {
+    	Post postV1 = new Post();
+
+    	Post postV1_1 = new Post();
+    	postV1_1.setSections(new ArrayList<Section>());
+    	postV1_1.getSections().add(new Section("section-1", null));
+
+		// operations simple diff
+		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
+		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
+	
+		List<PatchOperation> operations = simpleDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+
+	    Assert.assertThat(operations, hasSize(1));
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
+    }
+
+    @Test
+    public void addMiddleSection() throws Exception {
+    	Post postV1 = new Post();
     	postV1.setSections(new ArrayList<Section>());
     	postV1.getSections().add(new Section("section-1", null));
     	postV1.getSections().add(new Section("section-2", null));
     	postV1.getSections().add(new Section("section-3", null));
-    	postV1.getSections().add(new Section("section-4", null));
+        postV1.getSections().add(new Section("section-4", null));
 
     	Post postV1_1 = new Post();
-    	postV1_1.setVersion(1L);
-    	postV1_1.setTitle(title);
-    	postV1_1.setAuthor(new Author("james", "bond", "3"));
     	postV1_1.setSections(new ArrayList<Section>());
     	postV1_1.getSections().add(new Section("section-1", null));
     	postV1_1.getSections().add(new Section("section-2", null));
-    	postV1_1.getSections().add(new Section("section-X", null));
+    	postV1_1.getSections().add(new Section("section-2.5", null));
+    	postV1_1.getSections().add(new Section("section-3", null));
     	postV1_1.getSections().add(new Section("section-4", null));
 
-    	// operations regular diff
+		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
-
+	
 		List<PatchOperation> operations = simpleDiffProcessor.diff(sourceJsonNode, targetJsonNode);
-    	
-		System.out.println(operations);
-		
-//        Assert.assertThat(postV1_2, equalTo(postV1_1));
-//        Assert.assertThat(postV1_21, equalTo(postV1_1));
+
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+
+	    Assert.assertThat(operations, hasSize(1));
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
+    }
+
+    @Test
+    public void addLastSection() throws Exception {
+    	Post postV1 = new Post();
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+    	postV1.getSections().add(new Section("section-2", null));
+    	postV1.getSections().add(new Section("section-3", null));
+        postV1.getSections().add(new Section("section-4", null));
+
+    	Post postV1_1 = new Post();
+    	postV1_1.setSections(new ArrayList<Section>());
+    	postV1_1.getSections().add(new Section("section-1", null));
+    	postV1_1.getSections().add(new Section("section-2", null));
+    	postV1_1.getSections().add(new Section("section-3", null));
+    	postV1_1.getSections().add(new Section("section-4", null));
+    	postV1_1.getSections().add(new Section("section-5", null));
+
+		// operations simple diff
+		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
+		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
+	
+		List<PatchOperation> operations = simpleDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+
+	    Assert.assertThat(operations, hasSize(1));
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
     }
 
 }
