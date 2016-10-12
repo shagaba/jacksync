@@ -13,8 +13,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.shagaba.jacksync.PatchOperation;
-import com.shagaba.jacksync.RemoveOperation;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;
@@ -103,6 +101,44 @@ public class RemoveOperationTest {
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getAuthor().getFirstName(), equalTo(null));
+    }
+
+    @Test
+    public void removeSections() throws Exception {
+    	Post postV1 = new Post();
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+    	postV1.getSections().add(new Section("section-2", null));
+    	postV1.getSections().add(new Section("section-3", null));
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+        RemoveOperation removeOperation = new RemoveOperation("/sections");
+        String removeValueJson = mapper.writeValueAsString(removeOperation);
+
+        // read operation
+        PatchOperation operation = mapper.readValue(removeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2.getSections(), equalTo(null));
+    }
+
+    @Test
+    public void removeFirstSection() throws Exception {
+    	Post postV1 = new Post();
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+        RemoveOperation removeOperation = new RemoveOperation("/sections/0");
+        String removeValueJson = mapper.writeValueAsString(removeOperation);
+
+        // read operation
+        PatchOperation operation = mapper.readValue(removeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2.getSections().size(), equalTo(0));
     }
 
     @Test
