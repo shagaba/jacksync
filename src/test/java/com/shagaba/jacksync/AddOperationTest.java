@@ -3,6 +3,7 @@ package com.shagaba.jacksync;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -101,6 +102,26 @@ public class AddOperationTest {
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getAuthor().getFirstName(), equalTo(firstName));
+    }
+
+    @Test
+    public void addFirstSection() throws Exception {
+    	Post postV1 = new Post();
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+        Section section = new Section("section-1", null);
+        List<Section> sections = new ArrayList<Section>();
+        sections.add(section);
+        AddOperation addOperation = new AddOperation("/sections", mapper.valueToTree(sections));
+        String addValueJson = mapper.writeValueAsString(addOperation);
+
+        // read operation
+        PatchOperation operation = mapper.readValue(addValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2.getSections().size(), equalTo(1));
+        Assert.assertThat(postV2.getSections().get(0), equalTo(section));
     }
 
     @Test
