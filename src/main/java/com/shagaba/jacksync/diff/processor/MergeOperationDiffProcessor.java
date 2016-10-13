@@ -67,7 +67,7 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 	 */
 	protected List<PatchOperation> optimize(JsonNode targetJsonNode, List<PatchOperation> operations) {
 		Map<JsonPointer, JsonPointerData> parentToJsonPointerDataMap = new HashMap<>();
-		
+		List<PatchOperation> arrayOperations = new ArrayList<>();
 		for (PatchOperation operation: operations) {
 			JsonNode pathJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, operation.getPath());
 			if (pathJsonNode.isObject()) {
@@ -77,9 +77,13 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 				}
 				parentToJsonPointerDataMap.get(parentPointer).getOperations().add(operation);
 				parentToJsonPointerDataMap.get(parentPointer).getFieldNames().add(JacksonUtils.lastFieldName(operation.getPath()));
+			} else if (pathJsonNode.isArray()) {
+				arrayOperations.add(operation);
 			}
 		}
-		return optimize(targetJsonNode, parentToJsonPointerDataMap);
+		List<PatchOperation> mergeOperations = optimize(targetJsonNode, parentToJsonPointerDataMap);
+		mergeOperations.addAll(arrayOperations);
+		return mergeOperations;
 	}
 
 	/**
