@@ -18,8 +18,7 @@ public class ObjectDiffEngine implements DiffEngine {
 	 * @param objectMapper
 	 */
 	public ObjectDiffEngine(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-		this.diffProcessor = new SimpleDiffProcessor();
+		this(objectMapper, new SimpleDiffProcessor());
 	}
 
 	/**
@@ -28,6 +27,12 @@ public class ObjectDiffEngine implements DiffEngine {
 	 * @param diffProcessor
 	 */
 	public ObjectDiffEngine(ObjectMapper objectMapper, DiffProcessor diffProcessor) {
+        if (objectMapper == null) {
+            throw new IllegalArgumentException("ObjectMapper cannot be null");
+        }
+        if (diffProcessor == null) {
+            throw new IllegalArgumentException("DiffProcessor cannot be null");
+        }
 		this.objectMapper = objectMapper;
 		this.diffProcessor = diffProcessor;
 	}
@@ -40,6 +45,12 @@ public class ObjectDiffEngine implements DiffEngine {
 	 */
 	@Override
 	public <T> List<PatchOperation> diff(T source, T target) {
+        if (source == null) {
+            throw new IllegalArgumentException("Source object cannot be null");
+        }
+        if (target == null) {
+            throw new IllegalArgumentException("Target object cannot be null");
+        }
 		JsonNode sourceJsonNode = objectMapper.valueToTree(source);
 		JsonNode targetJsonNode = objectMapper.valueToTree(target);
 		return diffProcessor.diff(sourceJsonNode, targetJsonNode);
