@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.shagaba.jacksync.MergeOperation;
 import com.shagaba.jacksync.PatchOperation;
+import com.shagaba.jacksync.RemoveOperation;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
 public class MergeOperationDiffProcessor implements DiffProcessor {
@@ -71,12 +72,17 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 		for (PatchOperation operation: operations) {
 			JsonNode pathJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, operation.getPath());
 			if (pathJsonNode.isObject()) {
-				JsonPointer parentPointer = operation.getPath().head();
-				if (!parentToJsonPointerDataMap.containsKey(parentPointer)) {
-					parentToJsonPointerDataMap.put(parentPointer, new JsonPointerData());
+				if (operation.getClass() == RemoveOperation.class) {
+					// temp
+					arrayOperations.add(operation);
+				} else {
+					JsonPointer parentPointer = operation.getPath().head();
+					if (!parentToJsonPointerDataMap.containsKey(parentPointer)) {
+						parentToJsonPointerDataMap.put(parentPointer, new JsonPointerData());
+					}
+					parentToJsonPointerDataMap.get(parentPointer).getOperations().add(operation);
+					parentToJsonPointerDataMap.get(parentPointer).getFieldNames().add(JacksonUtils.lastFieldName(operation.getPath()));
 				}
-				parentToJsonPointerDataMap.get(parentPointer).getOperations().add(operation);
-				parentToJsonPointerDataMap.get(parentPointer).getFieldNames().add(JacksonUtils.lastFieldName(operation.getPath()));
 			} else if (pathJsonNode.isArray()) {
 				arrayOperations.add(operation);
 			}
