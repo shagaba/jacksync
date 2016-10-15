@@ -8,11 +8,23 @@ public class Section {
 
 	private List<Paragraph> paragraphs;
 
+	private String privateNote;
+
+
     /**
 	 * 
 	 */
 	public Section() {
 		super();
+	}
+
+	/**
+	 * 
+	 * @param title
+	 */
+	public Section(String title) {
+		super();
+		this.title = title;
 	}
 
 	/**
@@ -25,9 +37,16 @@ public class Section {
 		this.paragraphs = paragraphs;
 	}
 
-	public Section(String title) {
+	/**
+	 * 
+	 * @param title
+	 * @param paragraphs
+	 * @param privateNote
+	 */
+	public Section(String title, List<Paragraph> paragraphs, String privateNote) {
 		super();
 		this.title = title;
+		this.paragraphs = paragraphs;
 	}
 
 	/**
@@ -58,13 +77,28 @@ public class Section {
         this.paragraphs = paragraphs;
     }
 
+	/**
+	 * @return the privateNote
+	 */
+	public String getPrivateNote() {
+		return privateNote;
+	}
+
+	/**
+	 * @param privateNote the privateNote to set
+	 */
+	public void setPrivateNote(String privateNote) {
+		this.privateNote = privateNote;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Section {title=").append(title).append(", paragraphs=").append(paragraphs).append("}");
+		builder.append("Section {title=").append(title).append(", paragraphs=").append(paragraphs)
+				.append(", privateNote=").append(privateNote).append("}");
 		return builder.toString();
 	}
 
@@ -76,6 +110,7 @@ public class Section {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((paragraphs == null) ? 0 : paragraphs.hashCode());
+		result = prime * result + ((privateNote == null) ? 0 : privateNote.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -96,6 +131,11 @@ public class Section {
 			if (other.paragraphs != null)
 				return false;
 		} else if (!paragraphs.equals(other.paragraphs))
+			return false;
+		if (privateNote == null) {
+			if (other.privateNote != null)
+				return false;
+		} else if (!privateNote.equals(other.privateNote))
 			return false;
 		if (title == null) {
 			if (other.title != null)

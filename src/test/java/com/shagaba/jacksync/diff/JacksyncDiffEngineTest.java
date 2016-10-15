@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.shagaba.jacksync.JacksyncData;
 import com.shagaba.jacksync.PatchOperation;
+import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;
@@ -430,6 +432,46 @@ public class JacksyncDiffEngineTest {
 	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
+    }
+
+    @Test
+    public void complicated() throws Exception {
+    	
+    	jacksyncDiffEngine = new JacksyncDiffEngine(mapper, new MergeOperationDiffProcessor());
+    	
+    	Post source = new Post();
+    	source.setId("1");
+    	source.setVersion(1L);
+    	source.setAuthor(new Author("firstName", "lastName", "email"));
+    	source.setSections(new ArrayList<Section>());
+    	source.getSections().add(new Section("section-1", null));
+    	source.getSections().add(new Section("section-2", null));
+    	source.getSections().add(new Section("section-x", null));
+    	source.getSections().add(new Section("section-4", null));
+    	source.getSections().add(new Section("section-5", null));
+
+    	Post target = new Post();
+    	target.setId("1");
+    	target.setTitle("A Title");
+    	target.setVersion(2L);
+    	target.setAuthor(new Author("firstName", "lastName", "email@email.com"));
+    	target.setSections(new ArrayList<Section>());
+    	target.getSections().add(new Section("section-1", null));
+    	target.getSections().add(new Section("section-2", null));
+    	target.getSections().add(new Section("section-3", null));
+        target.getSections().add(new Section("section-4 update", null, "private note"));
+
+        JacksyncData jacksyncData = jacksyncDiffEngine.diff(source, target);
+        
+		// operations simple diff
+		JsonNode sourceJsonNode = mapper.valueToTree(source);
+		JsonNode targetJsonNode = mapper.valueToTree(target);
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : jacksyncData.getOperations()) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
     }
 
 }

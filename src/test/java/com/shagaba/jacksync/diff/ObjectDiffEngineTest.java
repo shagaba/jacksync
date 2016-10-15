@@ -394,4 +394,40 @@ public class ObjectDiffEngineTest {
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
     }
 
+    @Test
+    public void complicated() throws Exception {
+    	Post source = new Post();
+    	source.setId("1");
+    	source.setVersion(1L);
+    	source.setAuthor(new Author("firstName", "lastName", "email"));
+    	source.setSections(new ArrayList<Section>());
+    	source.getSections().add(new Section("section-1", null));
+    	source.getSections().add(new Section("section-2", null));
+    	source.getSections().add(new Section("section-x", null));
+    	source.getSections().add(new Section("section-4", null));
+    	source.getSections().add(new Section("section-5", null));
+
+    	Post target = new Post();
+    	target.setId("1");
+    	target.setTitle("A Title");
+    	target.setVersion(2L);
+    	target.setAuthor(new Author("firstName", "lastName", "email@email.com"));
+    	target.setSections(new ArrayList<Section>());
+    	target.getSections().add(new Section("section-1", null));
+    	target.getSections().add(new Section("section-2", null));
+    	target.getSections().add(new Section("section-3", null));
+        target.getSections().add(new Section("section-4 update", null, "private note"));
+
+		List<PatchOperation> operations = objectDiffEngine.diff(source, target);
+		// operations simple diff
+		JsonNode sourceJsonNode = mapper.valueToTree(source);
+		JsonNode targetJsonNode = mapper.valueToTree(target);
+		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+
+	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
+    }
+
 }
