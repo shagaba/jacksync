@@ -81,8 +81,9 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 				arrayOperations.add(operation);
 			}
 		}
-		List<PatchOperation> mergeOperations = optimize(targetJsonNode, parentToJsonPointerDataMap);
-		mergeOperations.addAll(arrayOperations);
+		// merge process must start handling arrays  
+		List<PatchOperation> mergeOperations = arrayOperations;
+		mergeOperations.addAll(optimize(targetJsonNode, parentToJsonPointerDataMap));
 		return mergeOperations;
 	}
 
@@ -98,22 +99,18 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 		
 		for (JsonPointer parentPath : parentToJsonPointerDataMap.keySet()) {
 			JsonPointerData jsonPointerData = parentToJsonPointerDataMap.get(parentPath);
-			if (jsonPointerData.getOperations().size() == 1) {
-				optimizedOperations.add(jsonPointerData.getOperations().get(0));
+			JsonNode parentJsonNode = JacksonUtils.locateContainer(targetJsonNode, parentPath);
+			ObjectNode parentObjectNode = (ObjectNode) parentJsonNode.deepCopy();
+			parentObjectNode.retain(jsonPointerData.getFieldNames());
+			MergeOperation mergeOperation = new MergeOperation(parentPath, parentObjectNode);
+			mergeOperation = parentObjectMergeOperation(targetJsonNode, mergeOperation);
+			
+			MergeOperation parentMergeOperation = parentToMergeOperation.get(mergeOperation.getPath());
+			if (parentMergeOperation == null) {
+				parentToMergeOperation.put(mergeOperation.getPath(), mergeOperation);
 			} else {
-				JsonNode parentJsonNode = JacksonUtils.locateContainer(targetJsonNode, parentPath);
-				ObjectNode parentObjectNode = (ObjectNode) parentJsonNode.deepCopy();
-				parentObjectNode.retain(jsonPointerData.getFieldNames());
-				MergeOperation mergeOperation = new MergeOperation(parentPath, parentObjectNode);
-				mergeOperation = parentObjectMergeOperation(targetJsonNode, mergeOperation);
-				
-				MergeOperation parentMergeOperation = parentToMergeOperation.get(mergeOperation.getPath());
-				if (parentMergeOperation == null) {
-					parentToMergeOperation.put(mergeOperation.getPath(), mergeOperation);
-				} else {
-					JsonNode mergedJsonNode = JacksonUtils.merge(parentMergeOperation.getValue(), mergeOperation.getValue());
-					parentMergeOperation.setValue(mergedJsonNode);
-				}
+				JsonNode mergedJsonNode = JacksonUtils.merge(parentMergeOperation.getValue(), mergeOperation.getValue());
+				parentMergeOperation.setValue(mergedJsonNode);
 			}
 		}
 		if (!parentToMergeOperation.isEmpty()) {

@@ -47,6 +47,7 @@ public class Section {
 		super();
 		this.title = title;
 		this.paragraphs = paragraphs;
+		this.privateNote = privateNote;
 	}
 
 	/**
