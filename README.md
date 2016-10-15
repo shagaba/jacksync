@@ -14,7 +14,7 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 
 ### Jacksync Data Structure
 * version - client received version.
-* approvedVersion - server version after committing all patch operations.
+* masterVersion - master version after committing all patch operations.
 * targetChecksum - target object after applying all patch operations.
 * operations - all patch operations.
 
@@ -108,6 +108,7 @@ This operation is functionally identical to an "add" operation at the target loc
 	"path" : "/sections/3/paragraphs/6" 
 }
 ```
+
 **Test**
 
 The "test" operation tests that a value at the target location is equal to a specified value.
@@ -132,7 +133,7 @@ Here, "equal" means that the value at the target location and the value conveyed
 **Merge**
 
 The "merge" operation merge a JSON merge patch document value at the target location value.
-The "merge" operation is unique to Jacksync project inspired by both RFC 6902 (JSON Patch) and RFC 7386 (JSON Merge Patch)
+The "merge" operation is unique to Jacksync project inspired by both RFC 6902 (JSON Patch) and RFC 7386 (JSON Merge Patch).
 The operation object MUST contain a "value" member which is a JSON merge patch document.
 The target location MUST exist for the operation to be successful.
 A JSON merge patch document describes changes to be made to a target JSON document using a syntax that closely mimics the document being modified.
@@ -142,13 +143,15 @@ A JSON merge patch document describes changes to be made to a target JSON docume
 * Null values in the merge patch are given special meaning to indicate the removal of existing values in the target.
 ```json
 {
-	"op": "merge", 
+	"op" : "merge", 
 	"path" : "/", 
 	"value" : { 
-		"title" : null,
+		"title" : "Jacksync unique operation",
+		"version" : 6,
 		"author" : { 
 			"firstName" : "James" , 
-			"lastName" : "Bond"
+			"lastName" : "Bond",
+			"email" : null
 		} 
 	}
 }
