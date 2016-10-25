@@ -72,7 +72,7 @@ public abstract class PatchPathOperation extends PatchOperation {
 	 * 
 	 * @param path
 	 */
-    protected void basicPathChecks(String path) {
+    protected final void basicPathChecks(String path) {
         if (path == null) {
             throw new IllegalArgumentException("Path is null");
         }
