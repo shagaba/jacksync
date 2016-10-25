@@ -5,13 +5,18 @@ import java.util.Objects;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+import com.shagaba.jacksync.exception.ChecksumException;
+
 /**
  * Utility methods to compute and validate checksums.
  * 
  * @author Shagaba
  *
  */
-public class ChecksumUtils {
+public final class ChecksumUtils {
+	
+	private ChecksumUtils() {
+	}
 
 	/**
 	 * Compute and return the checksum value (using the default CRC-32
@@ -28,7 +33,7 @@ public class ChecksumUtils {
 			byte[] jsonBytes = string.getBytes("UTF-8");
 			return computeChecksum(jsonBytes);
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+			throw new ChecksumException(e);
 		}
 	}
 
