@@ -164,7 +164,7 @@ public class Post implements Syncable{
 		result = prime * result + ((sections == null) ? 0 : sections.hashCode());
 		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + (int) (version ^ (version >>> 32));
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -215,10 +215,12 @@ public class Post implements Syncable{
 				return false;
 		} else if (!title.equals(other.title))
 			return false;
-		if (version != other.version)
+		if (version == null) {
+			if (other.version != null)
+				return false;
+		} else if (!version.equals(other.version))
 			return false;
 		return true;
 	}
 
-    
 }
