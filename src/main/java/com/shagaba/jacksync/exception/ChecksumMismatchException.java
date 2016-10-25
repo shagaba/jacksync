@@ -1,6 +1,6 @@
 package com.shagaba.jacksync.exception;
 
-public class ChecksumMismatchException extends SyncException {
+public class ChecksumMismatchException extends ChecksumException {
 
 	private static final long serialVersionUID = 5794042794197771149L;
 
