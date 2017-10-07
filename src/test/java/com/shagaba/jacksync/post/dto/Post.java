@@ -3,9 +3,7 @@ package com.shagaba.jacksync.post.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.shagaba.jacksync.Syncable;
-
-public class Post implements Syncable{
+public class Post {
 	
 	private String id;
 	
@@ -40,7 +38,6 @@ public class Post implements Syncable{
 	/**
 	 * @return the version
 	 */
-    @Override
 	public Long getVersion() {
 		return version;
 	}
@@ -48,7 +45,6 @@ public class Post implements Syncable{
 	/**
 	 * @param version the version to set
 	 */
-    @Override
 	public void setVersion(Long version) {
 		this.version = version;
 	}

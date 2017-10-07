@@ -8,9 +8,9 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.shagaba.jacksync.MergeOperation;
-import com.shagaba.jacksync.PatchOperation;
-import com.shagaba.jacksync.RemoveOperation;
+import com.shagaba.jacksync.operation.MergeOperation;
+import com.shagaba.jacksync.operation.PatchOperation;
+import com.shagaba.jacksync.operation.RemoveOperation;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
 public class MergeOperationDiffProcessor implements DiffProcessor {

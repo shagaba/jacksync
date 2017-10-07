@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.shagaba.jacksync.PatchOperation;
+import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.post.dto.Author;
 import com.shagaba.jacksync.post.dto.Post;
 import com.shagaba.jacksync.post.dto.Section;

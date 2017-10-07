@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.shagaba.jacksync.exception.IllegalContainerException;
@@ -21,8 +20,6 @@ public class JacksonUtils {
     public static final String SEPARATOR = "/";
     public static final String AFTER_LAST_ARRAY_ELEMENT = "-";
 
-	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     /**
      * Checks if a path is a root path.
      * 
@@ -38,37 +35,23 @@ public class JacksonUtils {
     }
     
 	/**
-	 * Checks if an input string is in valid JSON format
 	 * 
-	 * @param json input JSON string to validate
-	 * @return true if the input string is in valid JSON format
+	 * @param path
+	 * @return 
 	 */
-	public static boolean isValidJson(String json) {
-		if (json == null || json.isEmpty()) {
-			return false;
+	public static JsonPointer toJsonPointer(String path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Path is null");
+        }
+        if (!path.equals(path.trim())) {
+            throw new IllegalArgumentException(String.format("Path has not been trimmed: '%s'", path));
+        }
+		if (SEPARATOR.equals(path.trim())) {
+			return JsonPointer.compile("");
 		}
-		try {
-			toJsonNode(json);
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
+		return JsonPointer.compile(path);
 	}
-
-	/**
-	 * Deserialize JSON content as jackson JsonNode instance.
-	 * 
-	 * @param json JSON content to parse to build the jackson JsonNode instance
-	 * @return a jackson JsonNode if valid JSON content found
-	 */
-	public static JsonNode toJsonNode(String json) {
-		try {
-			return OBJECT_MAPPER.readTree(json);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(e);
-		}
-	}
-
+	
     /**
      * Locating the head (parent) JsonNode container specified by given JSON path in the given sourceJsonNode.
      *

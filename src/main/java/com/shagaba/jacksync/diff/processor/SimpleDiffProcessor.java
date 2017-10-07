@@ -7,10 +7,10 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.shagaba.jacksync.AddOperation;
-import com.shagaba.jacksync.PatchOperation;
-import com.shagaba.jacksync.RemoveOperation;
-import com.shagaba.jacksync.ReplaceOperation;
+import com.shagaba.jacksync.operation.AddOperation;
+import com.shagaba.jacksync.operation.PatchOperation;
+import com.shagaba.jacksync.operation.RemoveOperation;
+import com.shagaba.jacksync.operation.ReplaceOperation;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
 public class SimpleDiffProcessor implements DiffProcessor {
