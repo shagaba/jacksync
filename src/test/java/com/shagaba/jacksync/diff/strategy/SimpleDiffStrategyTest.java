@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.diff.processor;
+package com.shagaba.jacksync.diff.strategy;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -12,20 +12,21 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.shagaba.jacksync.BaseTest;
+import com.shagaba.jacksync.diff.strategy.SimpleDiffStrategy;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.support.dto.Author;
 import com.shagaba.jacksync.support.dto.Post;
 import com.shagaba.jacksync.support.dto.Section;
 
-public class MergeOperationDiffProcessorTest extends BaseTest {
+public class SimpleDiffStrategyTest extends BaseTest {
 
-	private MergeOperationDiffProcessor mergeOperationDiffProcessor;
-
+	private SimpleDiffStrategy simpleDiffStrategy;
+    
     @Before
     public void beforeEach() {
     	mapper = newObjectMapper();
     	
-    	mergeOperationDiffProcessor = new MergeOperationDiffProcessor();
+    	simpleDiffStrategy = new SimpleDiffStrategy();
     }
 
     @Test
@@ -39,7 +40,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -61,7 +62,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -84,7 +85,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -107,7 +108,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -139,7 +140,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -171,7 +172,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -193,7 +194,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -215,7 +216,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -238,7 +239,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -262,7 +263,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -285,7 +286,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -317,7 +318,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {
@@ -349,7 +350,7 @@ public class MergeOperationDiffProcessorTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		List<PatchOperation> operations = mergeOperationDiffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = simpleDiffStrategy.diff(sourceJsonNode, targetJsonNode);
 
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : operations) {

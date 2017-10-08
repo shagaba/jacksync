@@ -2,9 +2,9 @@ package com.shagaba.jacksync;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shagaba.jacksync.diff.SyncObjectDiffMapper;
-import com.shagaba.jacksync.diff.processor.DiffProcessor;
-import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
-import com.shagaba.jacksync.diff.processor.SimpleDiffProcessor;
+import com.shagaba.jacksync.diff.strategy.DiffStrategy;
+import com.shagaba.jacksync.diff.strategy.MergeOperationDiffStrategy;
+import com.shagaba.jacksync.diff.strategy.SimpleDiffStrategy;
 import com.shagaba.jacksync.sync.LocalSyncService;
 
 public class Jacksync {
@@ -55,9 +55,6 @@ public class Jacksync {
 		return syncObjectDiffMapper;
 	}
 
-	/**
-	 * 
-	 */
 	public static class JacksyncBuilder {
 
 		private ObjectMapper objectMapper;
@@ -101,11 +98,6 @@ public class Jacksync {
 		}
 	}
 
-	/**
-	 * 
-	 * @author Shai
-	 *
-	 */
 	public static class DiffMapperBuilder {
 		
 		private JacksyncBuilder jacksyncBuilder;
@@ -122,29 +114,38 @@ public class Jacksync {
 		public DiffMapperBuilder(JacksyncBuilder jacksyncBuilder, ObjectMapper objectMapper) {
 			this.jacksyncBuilder = jacksyncBuilder;
 			this.objectMapper = objectMapper;
+			this.syncObjectDiffMapper = new SyncObjectDiffMapper(objectMapper);
 		}
 		
 		/**
-		 * @param diffProcessor the diffProcessor to set
+		 * @param diffStrategy the diffStrategy to set
 		 */
-		public JacksyncBuilder diffProcessor(DiffProcessor diffProcessor) {
-			this.syncObjectDiffMapper = new SyncObjectDiffMapper(objectMapper, diffProcessor);
+		public JacksyncBuilder diffStrategy(DiffStrategy diffStrategy) {
+			this.syncObjectDiffMapper = new SyncObjectDiffMapper(objectMapper, diffStrategy);
 			return jacksyncBuilder;
 		}
 		
 		/**
-		 * mergeOperationDiffProcessor to set
+		 * mergeOperationDiffStrategy to set
 		 */
 		public JacksyncBuilder mergeOperationDiffProcessor() {
-			this.syncObjectDiffMapper = new SyncObjectDiffMapper(objectMapper, new MergeOperationDiffProcessor());
+			this.syncObjectDiffMapper = new SyncObjectDiffMapper(objectMapper, new MergeOperationDiffStrategy());
 			return jacksyncBuilder;
 		}
 		
 		/**
-		 * @param diffProcessor the diffProcessor to set
+		 * simpleDiffStrategy to set
 		 */
-		public JacksyncBuilder simpleDiffProcessor() {
-			this.syncObjectDiffMapper = new SyncObjectDiffMapper(objectMapper, new SimpleDiffProcessor());
+		public JacksyncBuilder simpleDiffStrategy() {
+			this.syncObjectDiffMapper = new SyncObjectDiffMapper(objectMapper, new SimpleDiffStrategy());
+			return jacksyncBuilder;
+		}
+		
+		/**
+		 * @param isComputeChecksum the isComputeChecksum to set
+		 */
+		public JacksyncBuilder computeChecksum(boolean isComputeChecksum) {
+			this.syncObjectDiffMapper.setComputeChecksum(isComputeChecksum);
 			return jacksyncBuilder;
 		}
 	}

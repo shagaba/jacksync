@@ -4,37 +4,37 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shagaba.jacksync.diff.processor.DiffProcessor;
-import com.shagaba.jacksync.diff.processor.SimpleDiffProcessor;
+import com.shagaba.jacksync.diff.strategy.DiffStrategy;
+import com.shagaba.jacksync.diff.strategy.SimpleDiffStrategy;
 import com.shagaba.jacksync.operation.PatchOperation;
 
 public class ObjectDiffMapper implements DiffMapper {
 	
 	protected ObjectMapper objectMapper;
 	
-	protected DiffProcessor diffProcessor;
+	protected DiffStrategy diffStrategy;
 	
 	/**
 	 * @param objectMapper
 	 */
 	public ObjectDiffMapper(ObjectMapper objectMapper) {
-		this(objectMapper, new SimpleDiffProcessor());
+		this(objectMapper, new SimpleDiffStrategy());
 	}
 
 	/**
 	 * 
 	 * @param objectMapper
-	 * @param diffProcessor
+	 * @param diffStrategy
 	 */
-	public ObjectDiffMapper(ObjectMapper objectMapper, DiffProcessor diffProcessor) {
+	public ObjectDiffMapper(ObjectMapper objectMapper, DiffStrategy diffStrategy) {
         if (objectMapper == null) {
             throw new IllegalArgumentException("ObjectMapper cannot be null");
         }
-        if (diffProcessor == null) {
-            throw new IllegalArgumentException("DiffProcessor cannot be null");
+        if (diffStrategy == null) {
+            throw new IllegalArgumentException("DiffStrategy cannot be null");
         }
 		this.objectMapper = objectMapper;
-		this.diffProcessor = diffProcessor;
+		this.diffStrategy = diffStrategy;
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class ObjectDiffMapper implements DiffMapper {
         }
 		JsonNode sourceJsonNode = objectMapper.valueToTree(source);
 		JsonNode targetJsonNode = objectMapper.valueToTree(target);
-		return diffProcessor.diff(sourceJsonNode, targetJsonNode);
+		return diffStrategy.diff(sourceJsonNode, targetJsonNode);
 	}
 	
 }

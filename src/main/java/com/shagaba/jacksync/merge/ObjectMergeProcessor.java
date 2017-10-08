@@ -21,7 +21,6 @@ public class ObjectMergeProcessor implements MergeProcessor {
 		this.objectMapper = objectMapper;
 	}
 
-
 	@Override
 	public <T> T merge(T sourceObject, String jsonValue) {
 		return merge(sourceObject, "", jsonValue);
@@ -32,7 +31,8 @@ public class ObjectMergeProcessor implements MergeProcessor {
 		try {
 			return merge(sourceObject, JacksonUtils.toJsonPointer(path), objectMapper.readTree(jsonValue));
 		} catch (IOException e) {
-			throw new IllegalArgumentException(e);		}
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	@Override

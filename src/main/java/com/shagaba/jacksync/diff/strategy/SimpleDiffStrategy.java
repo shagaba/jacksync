@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.diff.processor;
+package com.shagaba.jacksync.diff.strategy;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import com.shagaba.jacksync.operation.RemoveOperation;
 import com.shagaba.jacksync.operation.ReplaceOperation;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
-public class SimpleDiffProcessor implements DiffProcessor {
+public class SimpleDiffStrategy implements DiffStrategy {
 	
 	/**
 	 * 

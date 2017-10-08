@@ -9,6 +9,14 @@ public interface PatchProcessor {
 	/**
 	 * 
 	 * @param sourceObject
+	 * @param jsonOperations
+	 * @return
+	 */
+	public <T> T patch(T sourceObject, String jsonOperations);
+
+	/**
+	 * 
+	 * @param sourceObject
 	 * @param operations
 	 * @return
 	 */

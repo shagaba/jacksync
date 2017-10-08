@@ -2,6 +2,7 @@ package com.shagaba.jacksync.patch;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,11 +10,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.shagaba.jacksync.BaseTest;
+import com.shagaba.jacksync.diff.ObjectDiffMapper;
 import com.shagaba.jacksync.operation.AddOperation;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.operation.ReplaceOperation;
 import com.shagaba.jacksync.support.dto.Post;
+import com.shagaba.jacksync.support.dto.Section;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
 public class ObjectPatchProcessorTest extends BaseTest {
@@ -75,5 +79,35 @@ public class ObjectPatchProcessorTest extends BaseTest {
         
         Assert.assertThat(postV2, equalTo(targetPost));
     }
-    
+
+    @Test
+    public void clientSyncV3() throws Exception {
+    	// client post
+    	Post postV1 = new Post();
+    	postV1.setVersion(1L);
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+    	postV1.getSections().add(new Section("section-2", null));
+    	postV1.getSections().add(new Section("section-3", null));
+    	
+    	// expected post
+    	Post postV2 = new Post();
+    	postV2.setVersion(2L);
+    	postV2.setTitle("my 2nd test title");
+    	postV2.setSections(new ArrayList<Section>());
+    	postV2.getSections().add(new Section("section-1", null));
+    	postV2.getSections().add(new Section("section-3", null));
+
+    	// [{"op":"replace","path":"/version","value":2},{"op":"replace","path":"/title","value":"my 2nd test title"},{"op":"remove","path":"/sections/1"}]
+    	List<PatchOperation> operations = (new ObjectDiffMapper(mapper)).diff(postV1, postV2);
+    	String jsonOperations = mapper.writerFor(new TypeReference<List<PatchOperation>>(){}).writeValueAsString(operations);
+    	
+    	// server patch
+        Post postV2_1 = patchProcessor.patch(postV1, operations);
+        Post postV2_2 = patchProcessor.patch(postV1, jsonOperations);
+
+        Assert.assertThat(postV2_1, equalTo(postV2));
+        Assert.assertThat(postV2_2, equalTo(postV2));
+    }
+
 }

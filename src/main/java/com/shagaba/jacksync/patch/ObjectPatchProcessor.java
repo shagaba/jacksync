@@ -1,14 +1,17 @@
 package com.shagaba.jacksync.patch;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shagaba.jacksync.exception.PatchProcessingException;
 import com.shagaba.jacksync.operation.PatchOperation;
 
 public class ObjectPatchProcessor implements PatchProcessor {
+
 	private ObjectMapper objectMapper;
 	
 	/**
@@ -20,16 +23,18 @@ public class ObjectPatchProcessor implements PatchProcessor {
 
 	/**
 	 * 
-	 * @param currentJsonNode
-	 * @param operations
+	 * @param sourceObject
+	 * @param jsonOperations
 	 * @return
 	 */
-	protected JsonNode patch(JsonNode currentJsonNode, List<PatchOperation> operations) {
-		JsonNode syncdJsonNode = currentJsonNode.deepCopy();
-		for (PatchOperation operation : operations) {
-			syncdJsonNode = operation.apply(syncdJsonNode);
+	public <T> T patch(T sourceObject, String jsonOperations) {
+		List<PatchOperation> operations;
+		try {
+			operations = this.objectMapper.readValue(jsonOperations, new TypeReference<List<PatchOperation>>() {});
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
 		}
-		return syncdJsonNode;
+		return patch(sourceObject, operations);
 	}
 
 	/**
@@ -51,6 +56,20 @@ public class ObjectPatchProcessor implements PatchProcessor {
 			throw new PatchProcessingException(e);
 		}
 		return targetObject;
+	}
+
+	/**
+	 * 
+	 * @param currentJsonNode
+	 * @param operations
+	 * @return
+	 */
+	protected JsonNode patch(JsonNode currentJsonNode, List<PatchOperation> operations) {
+		JsonNode syncdJsonNode = currentJsonNode.deepCopy();
+		for (PatchOperation operation : operations) {
+			syncdJsonNode = operation.apply(syncdJsonNode);
+		}
+		return syncdJsonNode;
 	}
 
 }

@@ -26,7 +26,7 @@ public class JacksyncTest extends BaseTest {
     			.builder(mapper)
     			.localSyncService()
     			.diffMapper()
-    				.simpleDiffProcessor()
+    				.simpleDiffStrategy()
     			.build();
     	
     }

@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.diff.processor;
+package com.shagaba.jacksync.diff.strategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.operation.RemoveOperation;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
-public class MergeOperationDiffProcessor implements DiffProcessor {
+public class MergeOperationDiffStrategy implements DiffStrategy {
 	
-	protected DiffProcessor diffProcessor;
+	protected DiffStrategy diffStrategy;
 	
-	public MergeOperationDiffProcessor() {
-		diffProcessor = new SimpleDiffProcessor();
+	public MergeOperationDiffStrategy() {
+		diffStrategy = new SimpleDiffStrategy();
 	}
 	
 	/**
@@ -29,7 +29,7 @@ public class MergeOperationDiffProcessor implements DiffProcessor {
 	 */
 	@Override
 	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) {
-		List<PatchOperation> operations = diffProcessor.diff(sourceJsonNode, targetJsonNode);
+		List<PatchOperation> operations = diffStrategy.diff(sourceJsonNode, targetJsonNode);
 		return optimize(targetJsonNode, operations);
 	}
 	

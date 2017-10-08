@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shagaba.jacksync.diff.processor.DiffProcessor;
-import com.shagaba.jacksync.diff.processor.SimpleDiffProcessor;
+import com.shagaba.jacksync.diff.strategy.DiffStrategy;
+import com.shagaba.jacksync.diff.strategy.SimpleDiffStrategy;
 import com.shagaba.jacksync.exception.JacksyncDiffException;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.sync.SyncData;
@@ -28,27 +28,27 @@ public class SyncObjectDiffMapper implements SyncDiffMapper {
 	 * @param objectMapper
 	 */
 	public SyncObjectDiffMapper(ObjectMapper objectMapper) {
-		this(objectMapper, new SimpleDiffProcessor(), false);
+		this(objectMapper, new SimpleDiffStrategy(), false);
 	}
 
 	/**
 	 * 
 	 * @param objectMapper
-	 * @param diffProcessor
+	 * @param diffStrategy
 	 */
-	public SyncObjectDiffMapper(ObjectMapper objectMapper, DiffProcessor diffProcessor) {
-		this(objectMapper, diffProcessor, false);
+	public SyncObjectDiffMapper(ObjectMapper objectMapper, DiffStrategy diffStrategy) {
+		this(objectMapper, diffStrategy, false);
 	}
 
 	/**
 	 * 
 	 * @param objectMapper
-	 * @param diffProcessor
+	 * @param diffStrategy
 	 * @param isComputeChecksum
 	 */
-	public SyncObjectDiffMapper(ObjectMapper objectMapper, DiffProcessor diffProcessor, boolean isComputeChecksum) {
+	public SyncObjectDiffMapper(ObjectMapper objectMapper, DiffStrategy diffStrategy, boolean isComputeChecksum) {
 		this.objectMapper = objectMapper;
-		this.objectDiffMapper = new ObjectDiffMapper(objectMapper, diffProcessor);
+		this.objectDiffMapper = new ObjectDiffMapper(objectMapper, diffStrategy);
 		this.isComputeChecksum = isComputeChecksum;
 	}
 

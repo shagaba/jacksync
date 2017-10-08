@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.shagaba.jacksync.BaseTest;
-import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
+import com.shagaba.jacksync.diff.strategy.MergeOperationDiffStrategy;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.support.dto.Author;
 import com.shagaba.jacksync.support.dto.Post;
@@ -409,7 +409,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
     @Test
     public void complicated() throws Exception {
     	
-    	syncObjectDiffMapper = new SyncObjectDiffMapper(mapper, new MergeOperationDiffProcessor());
+    	syncObjectDiffMapper = new SyncObjectDiffMapper(mapper, new MergeOperationDiffStrategy());
     	
     	Post source = new Post();
     	source.setId("1");
