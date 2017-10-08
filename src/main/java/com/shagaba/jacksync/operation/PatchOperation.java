@@ -1,6 +1,6 @@
 package com.shagaba.jacksync.operation;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 	@JsonSubTypes.Type(value = TestOperation.class, name = "test"),
 	@JsonSubTypes.Type(value = MergeOperation.class, name = "merge")}
 )
-public abstract class PatchOperation implements Function<JsonNode, JsonNode> {
+public abstract class PatchOperation implements UnaryOperator<JsonNode> {
 
 	public abstract JsonPointer getPath();
 

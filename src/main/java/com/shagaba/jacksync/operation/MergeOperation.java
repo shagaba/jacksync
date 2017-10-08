@@ -67,9 +67,20 @@ public class MergeOperation extends PatchPathValueOperation {
 
 	@Override
 	public JsonNode apply(JsonNode objectJsonNode) {
-		merge(objectJsonNode, value);
+		merge(objectJsonNode, value, path);
         return objectJsonNode;
       }
+
+	/**
+	 * 
+	 * @param sourceJsonNode
+	 * @param elementJsonNode
+	 * @param path
+	 */
+	private void merge(JsonNode sourceJsonNode, JsonNode elementJsonNode, JsonPointer path) {
+		JsonNode pathJsonNode = JacksonUtils.locate(sourceJsonNode, path);
+		merge(pathJsonNode, elementJsonNode);
+	}
 	
 	/**
 	 * 
@@ -77,27 +88,26 @@ public class MergeOperation extends PatchPathValueOperation {
 	 * @param elementJsonNode
 	 */
 	private void merge(JsonNode sourceJsonNode, JsonNode elementJsonNode) {
-		JsonNode pathJsonNode = JacksonUtils.locate(sourceJsonNode, path);
+		if (elementJsonNode.size() == 0) {
+			ObjectNode sourceObjectNode = (ObjectNode) sourceJsonNode;
+ 			sourceObjectNode.removeAll();
+		}
  		for (Iterator<Map.Entry<String, JsonNode>> iterator = elementJsonNode.fields() ; iterator.hasNext();) {
-     		Map.Entry<String, JsonNode> elementMapEntry = iterator.next();
- 			if (pathJsonNode.isArray()) {
- 				pathJsonNode = elementJsonNode;
- 			} else {
- 				ObjectNode sourceObjectNode = (ObjectNode) pathJsonNode;
-	     		JsonNode nextValueJsonNode = elementMapEntry.getValue();
-	     		JsonNode nextSourceJsonNode = pathJsonNode.get(elementMapEntry.getKey());
+ 			Map.Entry<String, JsonNode> elementMapEntry = iterator.next();
+			ObjectNode sourceObjectNode = (ObjectNode) sourceJsonNode;
+     		JsonNode nextValueJsonNode = elementMapEntry.getValue();
+     		JsonNode nextSourceJsonNode = sourceJsonNode.get(elementMapEntry.getKey());
 
-	     		if (sourceObjectNode.has(elementMapEntry.getKey())) {
-	     			if (!nextValueJsonNode.isMissingNode() && !nextSourceJsonNode.isObject()) {
-	     				sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
-		     			continue;
-	     			} 
-	     		} else {
-	     			sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
+     		if (sourceObjectNode.has(elementMapEntry.getKey())) {
+     			if (!nextSourceJsonNode.isObject() || nextValueJsonNode.isNull()) {
+     				sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
 	     			continue;
-	     		}
-	 			merge(nextSourceJsonNode, nextValueJsonNode);
-			}
+     			} 
+     		} else {
+     			sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
+     			continue;
+     		}
+ 			merge(nextSourceJsonNode, nextValueJsonNode);
 		}
 	}
 }
