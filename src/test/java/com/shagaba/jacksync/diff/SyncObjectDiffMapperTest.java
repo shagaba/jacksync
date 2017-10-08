@@ -9,47 +9,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.shagaba.jacksync.BaseTest;
 import com.shagaba.jacksync.diff.processor.MergeOperationDiffProcessor;
 import com.shagaba.jacksync.operation.PatchOperation;
-import com.shagaba.jacksync.post.dto.Author;
-import com.shagaba.jacksync.post.dto.Post;
-import com.shagaba.jacksync.post.dto.Section;
+import com.shagaba.jacksync.support.dto.Author;
+import com.shagaba.jacksync.support.dto.Post;
+import com.shagaba.jacksync.support.dto.Section;
 import com.shagaba.jacksync.sync.SyncData;
 import com.shagaba.jacksync.sync.SyncObject;
 
-public class SyncObjectDiffMapperTest {
-	private ObjectMapper mapper;
+public class SyncObjectDiffMapperTest extends BaseTest {
 
 	private SyncObjectDiffMapper syncObjectDiffMapper;
-
-	
-
-    public ObjectMapper newObjectMapper() {
-        ObjectMapper jacksonObjectMapper = new ObjectMapper();
-
-        // - SerializationFeature for changing how JSON is written
-
-        // to allow serialization of "empty" POJOs (no properties to serialize)
-        // (without this setting, an exception is thrown in those cases)
-        jacksonObjectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        // Feature that determines whether Map entries with null values are to be serialized (true) or not (false)
-        jacksonObjectMapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
-        // only properties with non-null
-        jacksonObjectMapper.setSerializationInclusion(Include.NON_NULL);
-
-        // - DeserializationFeature for changing how JSON is read as POJOs:
-
-        // to prevent exception when encountering unknown property:
-        jacksonObjectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        // default: java.util.Date serialized as textual (ISO-8601) values
-        return jacksonObjectMapper;
-    }
     
     @Before
     public void beforeEach() {

@@ -1,15 +1,10 @@
 package com.shagaba.jacksync.sync;
 
 public class SyncObject<T> {
-	
-	
 
-	/**
-	 * 
-	 */
-	public SyncObject() {
-		super();
-	}
+	private Long version;
+	
+	private T object;
 
 	/**
 	 * @param version
@@ -21,24 +16,11 @@ public class SyncObject<T> {
 		this.object = object;
 	}
 
-	private Long version;
-	
-	private T object;
-
 	public Long getVersion() {
 		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 	public T getObject() {
 		return object;
 	}
-
-	public void setObject(T object) {
-		this.object = object;
-	}
-
 }

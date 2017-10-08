@@ -8,44 +8,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.shagaba.jacksync.operation.MergeOperation;
-import com.shagaba.jacksync.operation.PatchOperation;
-import com.shagaba.jacksync.post.dto.Author;
-import com.shagaba.jacksync.post.dto.Post;
-import com.shagaba.jacksync.post.dto.Section;
+import com.shagaba.jacksync.BaseTest;
+import com.shagaba.jacksync.support.dto.Author;
+import com.shagaba.jacksync.support.dto.Post;
+import com.shagaba.jacksync.support.dto.Section;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
-public class MergeOperationTest {
+public class MergeOperationTest extends BaseTest {
 	
-	private ObjectMapper mapper = null;
-
-    public ObjectMapper newObjectMapper() {
-        ObjectMapper jacksonObjectMapper = new ObjectMapper();
-
-        // - SerializationFeature for changing how JSON is written
-
-        // to allow serialization of "empty" POJOs (no properties to serialize)
-        // (without this setting, an exception is thrown in those cases)
-        jacksonObjectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        // Feature that determines whether Map entries with null values are to be serialized (true) or not (false)
-        jacksonObjectMapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
-        // only properties with non-null
-        jacksonObjectMapper.setSerializationInclusion(Include.NON_NULL);
-
-        // - DeserializationFeature for changing how JSON is read as POJOs:
-
-        // to prevent exception when encountering unknown property:
-        jacksonObjectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        // default: java.util.Date serialized as textual (ISO-8601) values
-        return jacksonObjectMapper;
-    }
-    
     @Before
     public void beforeEach() {
     	mapper = newObjectMapper();
@@ -71,7 +42,7 @@ public class MergeOperationTest {
         
         Assert.assertThat(postV2.getTitle(), equalTo(title));
     }
-
+    	
     @Test
     public void addAuthor() throws Exception {
     	Post postV1 = new Post();
@@ -124,6 +95,48 @@ public class MergeOperationTest {
         Post postV2 = mapper.treeToValue(postV2Node, Post.class);
 
         Assert.assertThat(postV2.getAuthor().getFirstName(), equalTo(null));
+    }
+
+    @Test
+    public void removeAuthor() throws Exception {
+		Post postV1 = new Post();
+		postV1.setAuthor(new Author("james", "bond", "james.bond@007.com"));
+		JsonNode postV1Node = mapper.valueToTree(postV1);
+
+    	Post postV1_1 = new Post();
+    	    	
+        MergeOperation mergeOperation = new MergeOperation(JacksonUtils.toJsonPointer(""), mapper.valueToTree(postV1_1));
+        String mergeValueJson = mapper.writeValueAsString(mergeOperation);
+
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+        
+        Assert.assertThat(postV2, equalTo(postV1_1));
+    }
+
+    @Test
+    public void addSections() throws Exception {
+    	Post postV1 = new Post();
+		postV1.setAuthor(new Author("james", "bond", "james.bond@007.com"));
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+       	Post postV1_1 = new Post();
+		postV1.setAuthor(new Author("james", "bond", "james.bond@007.com"));
+       	postV1_1.setSections(new ArrayList<Section>());
+       	postV1_1.getSections().add(new Section("section-1", null));
+       	postV1_1.getSections().add(new Section("section-2", null));
+
+        MergeOperation mergeOperation = new MergeOperation(mapper.valueToTree(postV1_1));
+        String mergeValueJson = mapper.writeValueAsString(mergeOperation);
+
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2, equalTo(postV1_1));
     }
 
     @Test
@@ -187,4 +200,29 @@ public class MergeOperationTest {
         Assert.assertThat(postV2.getSections().size(), equalTo(5));
         Assert.assertThat(postV2.getSections().get(4), equalTo(section5));
     }
+
+    @Test
+    public void removeSections() throws Exception {
+    	Post postV1 = new Post();
+		postV1.setAuthor(new Author("james", "bond", "james.bond@007.com"));
+		postV1.setSections(new ArrayList<Section>());
+		postV1.getSections().add(new Section("section-1", null));
+		postV1.getSections().add(new Section("section-2", null));
+        JsonNode postV1Node = mapper.valueToTree(postV1);
+
+       	Post postV1_1 = new Post();
+		postV1.setAuthor(new Author("james", "bond", "james.bond@007.com"));
+
+        MergeOperation mergeOperation = new MergeOperation(mapper.valueToTree(postV1_1));
+        String mergeValueJson = mapper.writeValueAsString(mergeOperation);
+
+        // read operation
+        PatchOperation operation = mapper.readValue(mergeValueJson, PatchOperation.class);
+        JsonNode postV2Node = operation.apply(postV1Node);
+        Post postV2 = mapper.treeToValue(postV2Node, Post.class);
+
+        Assert.assertThat(postV2, equalTo(postV1_1));
+    }
+
+
 }

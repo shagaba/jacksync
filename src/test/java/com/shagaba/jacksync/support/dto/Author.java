@@ -1,4 +1,4 @@
-package com.shagaba.jacksync.post.dto;
+package com.shagaba.jacksync.support.dto;
 
 public class Author {
 	
