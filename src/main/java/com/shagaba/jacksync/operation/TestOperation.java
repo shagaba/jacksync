@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.shagaba.jacksync.exception.InvalidPatchValueTestException;
+import com.shagaba.jacksync.exception.InvalidTestValueException;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
 /**
@@ -71,7 +71,7 @@ import com.shagaba.jacksync.utils.JacksonUtils;
 	public JsonNode apply(JsonNode sourceJsonNode) {
 		JsonNode pathJsonNode = JacksonUtils.locate(sourceJsonNode, path);
         if (!Objects.equals(pathJsonNode, value)) {
-        	throw new InvalidPatchValueTestException(String.format("Value test failure - Expected: %s, but: was %s", value, pathJsonNode));
+        	throw new InvalidTestValueException(String.format("Value test failure - Expected: %s, but: was %s", value, pathJsonNode));
         }
         return sourceJsonNode;
       }

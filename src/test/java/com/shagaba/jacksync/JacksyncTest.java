@@ -24,7 +24,7 @@ public class JacksyncTest extends BaseTest {
     	
     	this.jacksync = Jacksync
     			.builder(mapper)
-    			.localSyncService()
+    			.syncProcessor()
     			.diffMapper()
     				.simpleDiffStrategy()
     			.build();
@@ -56,7 +56,7 @@ public class JacksyncTest extends BaseTest {
     	// SyncData regular diff
     	SyncData syncData = jacksync.getDiffMapper().diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(2L, postV2));
     	// SyncObject clientSync
-    	SyncObject<Post> syncPostV2 = jacksync.getLocalSyncService().clientSync(new SyncObject<Post>(1L, postV1), syncData);
+    	SyncObject<Post> syncPostV2 = jacksync.getSyncProcessor().clientSync(new SyncObject<Post>(1L, postV1), syncData);
         
         Assert.assertThat(syncPostV2.getObject(), equalTo(postV2));
     }

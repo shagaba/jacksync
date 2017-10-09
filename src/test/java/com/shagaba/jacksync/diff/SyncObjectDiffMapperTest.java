@@ -21,25 +21,25 @@ import com.shagaba.jacksync.sync.SyncObject;
 
 public class SyncObjectDiffMapperTest extends BaseTest {
 
-	private SyncObjectDiffMapper syncObjectDiffMapper;
+	private SyncDiffMapper syncDiffMapper;
     
     @Before
     public void beforeEach() {
     	mapper = newObjectMapper();
     	
-    	syncObjectDiffMapper = new SyncObjectDiffMapper(mapper);
+    	syncDiffMapper = new SyncObjectDiffMapper(mapper);
     }
 
     @Test(expected=IllegalArgumentException.class)
 	public void diffFailsObjectMapperIsNull() throws Exception {
 		// operations simple diff
-    	syncObjectDiffMapper = new SyncObjectDiffMapper(null);
+    	syncDiffMapper = new SyncObjectDiffMapper(null);
 	}
 
     @Test(expected=IllegalArgumentException.class)
 	public void diffFailsDiffProcessorIsNull() throws Exception {
 		// operations simple diff
-    	syncObjectDiffMapper = new SyncObjectDiffMapper(mapper, null);
+    	syncDiffMapper = new SyncObjectDiffMapper(mapper, null);
 	}
 
     @Test(expected=IllegalArgumentException.class)
@@ -48,7 +48,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
     	Post source = null;
     	Post target = new Post();
 	
-    	syncObjectDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
+    	syncDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
 	}
 
     @Test(expected=IllegalArgumentException.class)
@@ -57,7 +57,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
     	Post source = new Post();
     	Post target = null;
 	
-    	syncObjectDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
+    	syncDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
 	}
 
     @Test
@@ -71,7 +71,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -94,7 +94,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -118,7 +118,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -142,7 +142,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -175,7 +175,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -208,7 +208,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -231,7 +231,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -254,7 +254,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -278,7 +278,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -304,7 +304,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -328,7 +328,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -361,7 +361,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -394,7 +394,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
 		for (PatchOperation operation : jacksyncData.getOperations()) {
@@ -409,7 +409,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
     @Test
     public void complicated() throws Exception {
     	
-    	syncObjectDiffMapper = new SyncObjectDiffMapper(mapper, new MergeOperationDiffStrategy());
+    	syncDiffMapper = new SyncObjectDiffMapper(mapper, new MergeOperationDiffStrategy());
     	
     	Post source = new Post();
     	source.setId("1");
@@ -433,7 +433,7 @@ public class SyncObjectDiffMapperTest extends BaseTest {
     	target.getSections().add(new Section("section-3", null));
         target.getSections().add(new Section("section-4 update", null, "private note"));
 
-        SyncData jacksyncData = syncObjectDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
+        SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
         
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);

@@ -1,6 +1,6 @@
 package com.shagaba.jacksync.exception;
 
-public class SyncException extends RuntimeException {
+public class SyncException extends Exception {
 
 	private static final long serialVersionUID = 7653512556880571885L;
 

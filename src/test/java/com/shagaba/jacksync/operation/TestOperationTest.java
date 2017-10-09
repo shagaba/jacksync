@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.shagaba.jacksync.BaseTest;
-import com.shagaba.jacksync.exception.InvalidPatchValueTestException;
+import com.shagaba.jacksync.exception.InvalidTestValueException;
 import com.shagaba.jacksync.support.dto.Post;
 import com.shagaba.jacksync.support.dto.Section;
 import com.shagaba.jacksync.utils.JacksonUtils;
@@ -42,7 +42,7 @@ public class TestOperationTest extends BaseTest {
         Assert.assertThat(postV2, equalTo(postV1));
     }
 
-    @Test(expected=InvalidPatchValueTestException.class)
+    @Test(expected=InvalidTestValueException.class)
     public void testInvalidTitle() throws Exception {
     	String title = "please test me";
     	Post postV1 = new Post();
@@ -75,7 +75,7 @@ public class TestOperationTest extends BaseTest {
         Assert.assertThat(postV2, equalTo(postV1));
     }
 
-    @Test(expected=InvalidPatchValueTestException.class)
+    @Test(expected=InvalidTestValueException.class)
     public void testInvalidTag() throws Exception {
     	String testMe = "please test me";
     	Post postV1 = new Post();
@@ -114,7 +114,7 @@ public class TestOperationTest extends BaseTest {
         Assert.assertThat(postV2, equalTo(postV1));
     }
     
-    @Test(expected=InvalidPatchValueTestException.class)
+    @Test(expected=InvalidTestValueException.class)
     public void testInvalidSection() throws Exception {
     	Section section2 = new Section("section-2Invalid", null);
     	Post postV1 = new Post();

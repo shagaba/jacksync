@@ -2,20 +2,15 @@ package com.shagaba.jacksync.diff;
 
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shagaba.jacksync.diff.strategy.DiffStrategy;
 import com.shagaba.jacksync.diff.strategy.SimpleDiffStrategy;
-import com.shagaba.jacksync.exception.JacksyncDiffException;
+import com.shagaba.jacksync.exception.DiffProcessingException;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.sync.SyncData;
 import com.shagaba.jacksync.sync.SyncObject;
 import com.shagaba.jacksync.utils.ChecksumUtils;
 
-/**
- * @author Shai
- *
- */
 public class SyncObjectDiffMapper implements SyncDiffMapper {
 	
 	protected ObjectMapper objectMapper;
@@ -78,10 +73,10 @@ public class SyncObjectDiffMapper implements SyncDiffMapper {
 	 * @param source
 	 * @param target
 	 * @return
-	 * @throws JsonProcessingException 
+	 * @throws DiffProcessingException 
 	 */
 	@Override
-	public <T> SyncData diff(SyncObject<T> source, SyncObject<T> target) throws JacksyncDiffException {
+	public <T> SyncData diff(SyncObject<T> source, SyncObject<T> target) throws DiffProcessingException {
         if (source == null || source.getObject() == null) {
             throw new IllegalArgumentException("Source object cannot be null");
         }
@@ -101,7 +96,7 @@ public class SyncObjectDiffMapper implements SyncDiffMapper {
 			jacksyncData.setOperations(operations);
 			return jacksyncData;
 		} catch (Exception e) {
-			throw new JacksyncDiffException(e);
+			throw new DiffProcessingException(e);
 		}
 	}
 

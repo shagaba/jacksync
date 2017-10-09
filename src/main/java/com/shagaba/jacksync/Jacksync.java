@@ -1,19 +1,21 @@
 package com.shagaba.jacksync;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shagaba.jacksync.diff.SyncDiffMapper;
 import com.shagaba.jacksync.diff.SyncObjectDiffMapper;
 import com.shagaba.jacksync.diff.strategy.DiffStrategy;
 import com.shagaba.jacksync.diff.strategy.MergeOperationDiffStrategy;
 import com.shagaba.jacksync.diff.strategy.SimpleDiffStrategy;
-import com.shagaba.jacksync.sync.LocalSyncService;
+import com.shagaba.jacksync.sync.SyncProcessor;
+import com.shagaba.jacksync.sync.LocalSyncProcessor;
 
 public class Jacksync {
 	
 	private ObjectMapper objectMapper;
 
-	private LocalSyncService localSyncService;
+	private SyncProcessor syncProcessor;
 
-	private SyncObjectDiffMapper syncObjectDiffMapper;
+	private SyncDiffMapper syncDiffMapper;
 
 	/**
 	 * 
@@ -30,8 +32,8 @@ public class Jacksync {
 	 */
 	private Jacksync(JacksyncBuilder jacksyncBuilder) {
 		this.objectMapper = jacksyncBuilder.objectMapper;
-		this.localSyncService = jacksyncBuilder.localSyncService;
-		this.syncObjectDiffMapper = jacksyncBuilder.diffMapperBuilder.syncObjectDiffMapper;
+		this.syncProcessor = jacksyncBuilder.localSyncProcessor;
+		this.syncDiffMapper = jacksyncBuilder.diffMapperBuilder.syncObjectDiffMapper;
 	}
 	
 	/**
@@ -42,24 +44,24 @@ public class Jacksync {
 	}
 	
 	/**
-	 * @return the localSyncService
+	 * @return the localSync
 	 */
-	public LocalSyncService getLocalSyncService() {
-		return localSyncService;
+	public SyncProcessor getSyncProcessor() {
+		return syncProcessor;
 	}
 
 	/**
 	 * @return the DiffMapper
 	 */
-	public SyncObjectDiffMapper getDiffMapper() {
-		return syncObjectDiffMapper;
+	public SyncDiffMapper getDiffMapper() {
+		return syncDiffMapper;
 	}
 
 	public static class JacksyncBuilder {
 
 		private ObjectMapper objectMapper;
 		
-		private LocalSyncService localSyncService;
+		private LocalSyncProcessor localSyncProcessor;
 
 		private DiffMapperBuilder diffMapperBuilder;
 
@@ -72,11 +74,10 @@ public class Jacksync {
 		}
 		
 		/**
-		 * localSyncService to set
+		 * localSync to set
 		 */
-		public JacksyncBuilder localSyncService() {
-			this.localSyncService = new LocalSyncService();
-			this.localSyncService.setObjectMapper(objectMapper);
+		public JacksyncBuilder syncProcessor() {
+			this.localSyncProcessor = new LocalSyncProcessor(objectMapper);
 			return this;
 		}
 

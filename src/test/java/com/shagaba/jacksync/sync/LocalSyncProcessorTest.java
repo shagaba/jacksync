@@ -17,14 +17,14 @@ import com.shagaba.jacksync.support.dto.Post;
 import com.shagaba.jacksync.utils.ChecksumUtils;
 import com.shagaba.jacksync.utils.JacksonUtils;
 
-public class LocalSyncServiceTest extends BaseTest {
+public class LocalSyncProcessorTest extends BaseTest {
 
-	private LocalSyncService localSyncService = null;
+	private SyncProcessor syncProcessor = null;
 	
     @Before
     public void beforeEach() {
     	mapper = newObjectMapper();
-    	this.localSyncService = new LocalSyncService(mapper);
+    	this.syncProcessor = new LocalSyncProcessor(mapper);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class LocalSyncServiceTest extends BaseTest {
     	jacksyncData.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
         
     	// server sync
-    	SyncObject<Post> syncPostV2 = localSyncService.clientSync(new SyncObject<Post>(1L, serverPostV1), jacksyncData);
+    	SyncObject<Post> syncPostV2 = syncProcessor.clientSync(new SyncObject<Post>(1L, serverPostV1), jacksyncData);
         
         Assert.assertThat(syncPostV2.getObject(), equalTo(targetPost));
     }
@@ -90,7 +90,7 @@ public class LocalSyncServiceTest extends BaseTest {
     	jacksyncData.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
         
     	// server sync
-    	SyncObject<Post> syncPostV2 = localSyncService.masterSync(new SyncObject<Post>(1L, clientPostV1), jacksyncData);
+    	SyncObject<Post> syncPostV2 = syncProcessor.masterSync(new SyncObject<Post>(1L, clientPostV1), jacksyncData);
         
         Assert.assertThat(syncPostV2.getObject(), equalTo(targetPost));
     }

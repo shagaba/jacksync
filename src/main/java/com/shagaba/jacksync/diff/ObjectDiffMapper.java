@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shagaba.jacksync.diff.strategy.DiffStrategy;
 import com.shagaba.jacksync.diff.strategy.SimpleDiffStrategy;
+import com.shagaba.jacksync.exception.DiffProcessingException;
 import com.shagaba.jacksync.operation.PatchOperation;
 
 public class ObjectDiffMapper implements DiffMapper {
@@ -42,9 +43,10 @@ public class ObjectDiffMapper implements DiffMapper {
 	 * @param source
 	 * @param target
 	 * @return
+	 * @throws DiffProcessingException 
 	 */
 	@Override
-	public <T> List<PatchOperation> diff(T source, T target) {
+	public <T> List<PatchOperation> diff(T source, T target) throws DiffProcessingException {
         if (source == null) {
             throw new IllegalArgumentException("Source object cannot be null");
         }

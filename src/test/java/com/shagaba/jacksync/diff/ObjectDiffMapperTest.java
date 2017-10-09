@@ -19,25 +19,25 @@ import com.shagaba.jacksync.support.dto.Section;
 
 public class ObjectDiffMapperTest extends BaseTest {
 
-	private ObjectDiffMapper objectDiffMapper;
+	private DiffMapper diffMapper;
     
     @Before
     public void beforeEach() {
     	mapper = newObjectMapper();
     	
-    	objectDiffMapper = new ObjectDiffMapper(mapper);
+    	diffMapper = new ObjectDiffMapper(mapper);
     }
 
     @Test(expected=IllegalArgumentException.class)
 	public void diffFailsObjectMapperIsNull() throws Exception {
 		// operations simple diff
-    	objectDiffMapper = new ObjectDiffMapper(null);
+    	diffMapper = new ObjectDiffMapper(null);
 	}
 
     @Test(expected=IllegalArgumentException.class)
 	public void diffFailsDiffProcessorIsNull() throws Exception {
 		// operations simple diff
-    	objectDiffMapper = new ObjectDiffMapper(mapper, null);
+    	diffMapper = new ObjectDiffMapper(mapper, null);
 	}
 
     @Test(expected=IllegalArgumentException.class)
@@ -46,7 +46,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	Post source = null;
     	Post target = new Post();
 	
-		objectDiffMapper.diff(source, target);
+		diffMapper.diff(source, target);
 	}
 
     @Test(expected=IllegalArgumentException.class)
@@ -55,7 +55,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	Post source = new Post();
     	Post target = null;
 	
-		objectDiffMapper.diff(source, target);
+		diffMapper.diff(source, target);
 	}
 
     @Test
@@ -65,7 +65,7 @@ public class ObjectDiffMapperTest extends BaseTest {
 		Post target = new Post();
 		target.setTitle("my test title");
 	
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -85,7 +85,7 @@ public class ObjectDiffMapperTest extends BaseTest {
 		Post target = new Post();
 		target.setAuthor(new Author("james", "bond", "james.bond@007.com"));
 		
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -106,7 +106,7 @@ public class ObjectDiffMapperTest extends BaseTest {
 		Post target = new Post();
 		target.setAuthor(new Author("james", null, null));
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -127,7 +127,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	target.setSections(new ArrayList<Section>());
     	target.getSections().add(new Section("section-1", null));
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -157,7 +157,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	target.getSections().add(new Section("section-3", null));
     	target.getSections().add(new Section("section-4", null));
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -187,7 +187,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	target.getSections().add(new Section("section-4", null));
     	target.getSections().add(new Section("section-5", null));
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -207,7 +207,7 @@ public class ObjectDiffMapperTest extends BaseTest {
 	
 		Post target = new Post();
 		
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -227,7 +227,7 @@ public class ObjectDiffMapperTest extends BaseTest {
 		
     	Post target = new Post();
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -248,7 +248,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	Post target = new Post();
     	target.setAuthor(new Author());
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -271,7 +271,7 @@ public class ObjectDiffMapperTest extends BaseTest {
 
     	Post target = new Post();
 
-    	List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+    	List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -292,7 +292,7 @@ public class ObjectDiffMapperTest extends BaseTest {
 
     	Post target = new Post();
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -322,7 +322,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	target.getSections().add(new Section("section-3", null));
         target.getSections().add(new Section("section-4", null));
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -352,7 +352,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	target.getSections().add(new Section("section-3", null));
         target.getSections().add(new Section("section-4", null));
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
@@ -389,7 +389,7 @@ public class ObjectDiffMapperTest extends BaseTest {
     	target.getSections().add(new Section("section-3", null));
         target.getSections().add(new Section("section-4 update", null, "private note"));
 
-		List<PatchOperation> operations = objectDiffMapper.diff(source, target);
+		List<PatchOperation> operations = diffMapper.diff(source, target);
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);

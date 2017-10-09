@@ -3,7 +3,6 @@ package com.shagaba.jacksync.patch;
 import java.io.IOException;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,8 +25,9 @@ public class ObjectPatchProcessor implements PatchProcessor {
 	 * @param sourceObject
 	 * @param jsonOperations
 	 * @return
+	 * @throws PatchProcessingException 
 	 */
-	public <T> T patch(T sourceObject, String jsonOperations) {
+	public <T> T patch(T sourceObject, String jsonOperations) throws PatchProcessingException {
 		List<PatchOperation> operations;
 		try {
 			operations = this.objectMapper.readValue(jsonOperations, new TypeReference<List<PatchOperation>>() {});
@@ -42,17 +42,18 @@ public class ObjectPatchProcessor implements PatchProcessor {
 	 * @param sourceObject
 	 * @param operations
 	 * @return
+	 * @throws PatchProcessingException 
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T patch(T sourceObject, List<PatchOperation> operations) {
+	public <T> T patch(T sourceObject, List<PatchOperation> operations) throws PatchProcessingException {
 		T targetObject = null;
 		try {
 			JsonNode sourceJsonNode = objectMapper.valueToTree(sourceObject);
 			JsonNode targetJsonNode = patch(sourceJsonNode, operations);
 			
 			targetObject = (T) objectMapper.treeToValue(targetJsonNode, sourceObject.getClass());
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			throw new PatchProcessingException(e);
 		}
 		return targetObject;

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.shagaba.jacksync.exception.DiffProcessingException;
 import com.shagaba.jacksync.operation.MergeOperation;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.operation.RemoveOperation;
@@ -26,9 +27,10 @@ public class MergeOperationDiffStrategy implements DiffStrategy {
 	 * @param sourceJsonNode
 	 * @param targetJsonNode
 	 * @return
+	 * @throws DiffProcessingException 
 	 */
 	@Override
-	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) {
+	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) throws DiffProcessingException {
 		List<PatchOperation> operations = diffStrategy.diff(sourceJsonNode, targetJsonNode);
 		return optimize(targetJsonNode, operations);
 	}

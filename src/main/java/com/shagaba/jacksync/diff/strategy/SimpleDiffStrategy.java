@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.shagaba.jacksync.exception.DiffProcessingException;
 import com.shagaba.jacksync.operation.AddOperation;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.operation.RemoveOperation;
@@ -20,9 +21,10 @@ public class SimpleDiffStrategy implements DiffStrategy {
 	 * @param sourceJsonNode
 	 * @param targetJsonNode
 	 * @return
+	 * @throws DiffProcessingException 
 	 */
 	@Override
-	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) {
+	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) throws DiffProcessingException {
 		List<PatchOperation> operations = new ArrayList<>();
 		return diff(sourceJsonNode, targetJsonNode, operations, JsonPointer.compile("/"));
 	}

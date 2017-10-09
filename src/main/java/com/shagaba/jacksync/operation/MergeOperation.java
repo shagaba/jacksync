@@ -91,23 +91,22 @@ public class MergeOperation extends PatchPathValueOperation {
 		if (elementJsonNode.size() == 0) {
 			ObjectNode sourceObjectNode = (ObjectNode) sourceJsonNode;
  			sourceObjectNode.removeAll();
-		}
- 		for (Iterator<Map.Entry<String, JsonNode>> iterator = elementJsonNode.fields() ; iterator.hasNext();) {
- 			Map.Entry<String, JsonNode> elementMapEntry = iterator.next();
-			ObjectNode sourceObjectNode = (ObjectNode) sourceJsonNode;
-     		JsonNode nextValueJsonNode = elementMapEntry.getValue();
-     		JsonNode nextSourceJsonNode = sourceJsonNode.get(elementMapEntry.getKey());
-
-     		if (sourceObjectNode.has(elementMapEntry.getKey())) {
-     			if (!nextSourceJsonNode.isObject() || nextValueJsonNode.isNull()) {
-     				sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
+		} else {
+	 		for (Iterator<Map.Entry<String, JsonNode>> iterator = elementJsonNode.fields() ; iterator.hasNext();) {
+	 			Map.Entry<String, JsonNode> elementMapEntry = iterator.next();
+				ObjectNode sourceObjectNode = (ObjectNode) sourceJsonNode;
+	     		JsonNode nextValueJsonNode = elementMapEntry.getValue();
+	     		JsonNode nextSourceJsonNode = sourceJsonNode.get(elementMapEntry.getKey());
+	
+	     		if (!sourceObjectNode.has(elementMapEntry.getKey())) {
+	 				sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
 	     			continue;
-     			} 
-     		} else {
-     			sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
-     			continue;
-     		}
- 			merge(nextSourceJsonNode, nextValueJsonNode);
+	     		} else if (!nextSourceJsonNode.isObject() || nextValueJsonNode.isNull()) {
+	     			sourceObjectNode.replace(elementMapEntry.getKey(), elementMapEntry.getValue());
+	     			continue;
+	     		}
+	 			merge(nextSourceJsonNode, nextValueJsonNode);
+			}
 		}
 	}
 }
