@@ -2,15 +2,21 @@
 
 [![Build Status](https://travis-ci.org/shagaba/jacksync.svg?branch=master)](https://travis-ci.org/shagaba/jacksync)
 
-## Creating and applying sync patches
+## Creating and applying sync patches (sync, merge, patch, diff)
 
 Jacksync provides a library for synchronization by producing and applying a JSON patches to Java objects. 
 Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) written in Java, which uses Jackson at its core.
 
 ### Features overview
-* enables an efficient data synchronization between clients and servers (or any set of nodes that share a resource).
+* synchronization - enables an efficient data synchronization between clients and masters (or any set of nodes that share a resource).
 * allows you to update a JSON document by sending the changes rather than the whole document.
+* [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) - add, remove, replace, move, copy, test.
+* [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) - merge patch document.
+* JSON "diff" with two optional strategies:
+  * simple - [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) operations.
+  * merge - using both [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) operations with a unique **merge operation** based on [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) that can minimize the amount of the operations and JSON document length.
 * enables simple commit and audit all JSON Patch changes in your data, and later on browse the detailed change history.
+* enables "reverse" patches using diff processor.
 
 ### Jacksync Data Structure
 * version - client received version.
