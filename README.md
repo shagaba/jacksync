@@ -33,7 +33,7 @@ The following is an example JSON Patch document
 ]
 ```
 
-For example, 
+For example:
 * given the following Blog Post original JSON document:
 
 ```json
@@ -67,17 +67,17 @@ For example,
 ]
 ```
 
-* using 
+* using the following Java code:
 
 ```java
 PatchProcessor patchProcessor = new ObjectPatchProcessor(objectMapper);
 Post postV2 = patchProcessor.patch(originalPostV1, operations);
 ```
 
-### JSON Patch
+### JSON Merge Patch
 A JSON merge patch document describes changes to be made to a target JSON document using a syntax that closely mimics the document being modified.
 
-For example, 
+For example:
 * changing the Blog Post can be achieved by sending:
 
 ```json
@@ -88,7 +88,7 @@ For example,
 }
 ```
 
-* using 
+* using the following Java code:
 
 ```java
 MergeProcessor mergeProcessor = new ObjectMergeProcessor(mapper);
