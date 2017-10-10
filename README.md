@@ -18,7 +18,92 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 * enables simple commit and audit all JSON Patch changes in your data, and later on browse the detailed change history.
 * enables "reverse" patches using diff processor.
 
-### Jacksync Data Structure
+### JSON Patch
+A JSON Patch document is a JSON document that represents an array of objects. Each object represents a single operation to be applied to the target JSON document.
+The following is an example JSON Patch document
+
+```json
+[
+	{ "op": "test", "path": "/a/b/c", "value": "foo" },
+	{ "op": "remove", "path": "/a/b/c" },
+	{ "op": "add", "path": "/a/b/c", "value": [ "foo", "bar" ] },
+	{ "op": "replace", "path": "/a/b/c", "value": 42 },
+	{ "op": "move", "from": "/a/b/c", "path": "/a/b/d" },
+	{ "op": "copy", "from": "/a/b/d", "path": "/a/b/e" }
+]
+```
+
+For example, 
+* given the following Blog Post original JSON document:
+
+```json
+{
+	"id": "007",
+	"title": "Diamonds Are Forever",
+	"sections": [ {"title": "section-1"}, {"title": "section-2"}, {"title": "section-3"} ],
+	"author": {"firstName": "james", "lastName": "bond", "email": "???"}
+}
+```
+
+* changing the Blog Post JSON document to be:
+
+```json
+{
+	"id": "007",
+	"title": "Diamonds Are Forever",
+	"sections": [ {"title": "section-1"}, {"title": "section-3"}],
+	"tags": [ "007", "Sean Connery", "action"],
+	"author": {"firstName": "james", "lastName": "bond", "email": "james.bond@mi6.com"}
+}
+```
+
+* can be achieved by sending:
+
+```json
+[
+	{"op":"remove","path":"/sections/1"},
+	{"op":"add","path":"/tags","value":["007","Sean Connery","action"]},
+	{"op":"replace","path":"/author/email","value":"james.bond@mi6.com"}
+]
+```
+
+* using 
+
+```java
+PatchProcessor patchProcessor = new ObjectPatchProcessor(objectMapper);
+Post postV2 = patchProcessor.patch(originalPostV1, operations);
+```
+
+### JSON Patch
+A JSON merge patch document describes changes to be made to a target JSON document using a syntax that closely mimics the document being modified.
+
+For example, 
+* changing the Blog Post can be achieved by sending:
+
+```json
+{
+	"sections": [ {"title": "section-1"}, {"title": "section-3"}],
+	"tags": [ "007", "Sean Connery", "action"],
+	"author": {"firstName": "james", "lastName": "bond", "email": "james.bond@mi6.com"}
+}
+```
+
+* using 
+
+```java
+MergeProcessor mergeProcessor = new ObjectMergeProcessor(mapper);
+Post postV2 = mergeProcessor.merge(originalPostV1, value);
+```
+
+### Diff
+TBD
+
+
+
+
+
+### Sync Data Structure
+TBD
 * version - client received version.
 * masterVersion - master version after committing all patch operations.
 * targetChecksum - target object after applying all patch operations.
