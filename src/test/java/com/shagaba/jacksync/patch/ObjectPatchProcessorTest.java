@@ -16,6 +16,7 @@ import com.shagaba.jacksync.diff.ObjectDiffMapper;
 import com.shagaba.jacksync.operation.AddOperation;
 import com.shagaba.jacksync.operation.PatchOperation;
 import com.shagaba.jacksync.operation.ReplaceOperation;
+import com.shagaba.jacksync.support.dto.Author;
 import com.shagaba.jacksync.support.dto.Post;
 import com.shagaba.jacksync.support.dto.Section;
 import com.shagaba.jacksync.utils.JacksonUtils;
@@ -99,6 +100,38 @@ public class ObjectPatchProcessorTest extends BaseTest {
     	postV2.getSections().add(new Section("section-3", null));
 
     	// [{"op":"replace","path":"/version","value":2},{"op":"replace","path":"/title","value":"my 2nd test title"},{"op":"remove","path":"/sections/1"}]
+    	List<PatchOperation> operations = (new ObjectDiffMapper(mapper)).diff(postV1, postV2);
+    	String jsonOperations = mapper.writerFor(new TypeReference<List<PatchOperation>>(){}).writeValueAsString(operations);
+    	
+    	// server patch
+        Post postV2_1 = patchProcessor.patch(postV1, operations);
+        Post postV2_2 = patchProcessor.patch(postV1, jsonOperations);
+
+        Assert.assertThat(postV2_1, equalTo(postV2));
+        Assert.assertThat(postV2_2, equalTo(postV2));
+    }
+
+    @Test
+    public void clientSyncV4() throws Exception {
+    	// client post
+    	Post postV1 = new Post();
+    	postV1.setId("007");
+    	postV1.setTitle("Diamonds Are Forever");
+    	postV1.setSections(new ArrayList<Section>());
+    	postV1.getSections().add(new Section("section-1", null));
+    	postV1.getSections().add(new Section("section-2", null));
+    	postV1.getSections().add(new Section("section-3", null));
+    	
+    	// expected post
+    	Post postV2 = new Post();
+    	postV2.setId("007");
+    	postV2.setTitle("Diamonds Are Forever");
+    	postV2.setAuthor(new Author("james", "bond", "james.bond@mi6.com"));
+    	postV2.setSections(new ArrayList<Section>());
+    	postV2.getSections().add(new Section("section-1", null));
+    	postV2.getSections().add(new Section("section-3", null));
+    	postV2.setTags(Arrays.asList("007", "Sean Connery", "action"));
+
     	List<PatchOperation> operations = (new ObjectDiffMapper(mapper)).diff(postV1, postV2);
     	String jsonOperations = mapper.writerFor(new TypeReference<List<PatchOperation>>(){}).writeValueAsString(operations);
     	

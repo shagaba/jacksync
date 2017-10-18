@@ -1,11 +1,7 @@
 package com.shagaba.jacksync.utils;
 
-import java.util.Iterator;
-
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.shagaba.jacksync.exception.IllegalContainerException;
 import com.shagaba.jacksync.exception.NoSuchPathException;
 
@@ -41,7 +37,7 @@ public class JacksonUtils {
 	 */
 	public static JsonPointer toJsonPointer(String path) {
         if (path == null) {
-            throw new IllegalArgumentException("Path is null");
+            throw new IllegalArgumentException("Path cannot be null");
         }
         if (!path.equals(path.trim())) {
             throw new IllegalArgumentException(String.format("Path has not been trimmed: '%s'", path));
@@ -142,44 +138,4 @@ public class JacksonUtils {
 		return path.append(JsonPointer.compile(SEPARATOR.concat(fieldName)));
 	}
 
-	/**
-	 * 
-	 * @param mainNode
-	 * @param updateNode
-	 * @return
-	 */
-	public static JsonNode merge(JsonNode mainNode, JsonNode updateNode) {
-
-	    Iterator<String> fieldNames = updateNode.fieldNames();
-
-	    while (fieldNames.hasNext()) {
-	        String updatedFieldName = fieldNames.next();
-	        JsonNode valueToBeUpdated = mainNode.get(updatedFieldName);
-	        JsonNode updatedValue = updateNode.get(updatedFieldName);
-
-	        // ArrayNode
-	        if (valueToBeUpdated != null && updatedValue.isArray()) {
-	            // running a loop for all elements of the updated ArrayNode
-	            for (int i = 0; i < updatedValue.size(); i++) {
-	                JsonNode updatedChildNode = updatedValue.get(i);
-	                // Create a new Node in the node that should be updated, if there was no corresponding node in it
-	                // Use-case - where the updateNode will have a new element in its Array
-	                if (valueToBeUpdated.size() <= i) {
-	                    ((ArrayNode) valueToBeUpdated).add(updatedChildNode);
-	                }
-	                // getting reference for the node to be updated
-	                JsonNode childNodeToBeUpdated = valueToBeUpdated.get(i);
-	                merge(childNodeToBeUpdated, updatedChildNode);
-	            }
-	        // ObjectNode
-	        } else if (valueToBeUpdated != null && valueToBeUpdated.isObject()) {
-	            merge(valueToBeUpdated, updatedValue);
-	        } else {
-	            if (mainNode instanceof ObjectNode) {
-	                ((ObjectNode) mainNode).replace(updatedFieldName, updatedValue);
-	            }
-	        }
-	    }
-	    return mainNode;
-	}
 }

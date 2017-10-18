@@ -44,17 +44,17 @@ public class LocalSyncProcessorTest extends BaseTest {
     	targetPost.setTitle(clientPostV1.getTitle());
     	targetPost.setVersion(1L);
 
-    	// sync jacksyncData & operations
-    	SyncData jacksyncData = new SyncData();
-    	jacksyncData.setVersion(1L);
+    	// sync syncData & operations
+    	SyncData syncData = new SyncData();
+    	syncData.setVersion(1L);
     	// operations
     	AddOperation addOperation = new AddOperation(JacksonUtils.toJsonPointer("/title"), mapper.valueToTree(targetPost.getTitle()));
-        jacksyncData.setOperations(Arrays.asList((PatchOperation) addOperation));
+        syncData.setOperations(Arrays.asList((PatchOperation) addOperation));
     	// target checksum
-    	jacksyncData.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
+    	syncData.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
         
     	// server sync
-    	SyncObject<Post> syncPostV2 = syncProcessor.clientSync(new SyncObject<Post>(1L, serverPostV1), jacksyncData);
+    	SyncObject<Post> syncPostV2 = syncProcessor.clientSync(new SyncObject<Post>(1L, serverPostV1), syncData);
         
         Assert.assertThat(syncPostV2.getObject(), equalTo(targetPost));
     }
@@ -77,20 +77,20 @@ public class LocalSyncProcessorTest extends BaseTest {
     	targetPost.setTitle(serverPostV1.getTitle());
     	targetPost.setVersion(2L);
 
-    	// sync jacksyncData & operations
-    	SyncData jacksyncData = new SyncData();
-    	jacksyncData.setVersion(1L);
-    	jacksyncData.setMasterVersion(2L);
+    	// sync syncData & operations
+    	SyncData syncData = new SyncData();
+    	syncData.setVersion(1L);
+    	syncData.setMasterVersion(2L);
     	// operations
     	AddOperation addOperation = new AddOperation(JacksonUtils.toJsonPointer("/title"), mapper.valueToTree(targetPost.getTitle()));
     	ReplaceOperation replaceOperation = new ReplaceOperation(JacksonUtils.toJsonPointer("/version"), mapper.valueToTree(2));
     	List<PatchOperation> operations = Arrays.asList((PatchOperation) addOperation, (PatchOperation) replaceOperation);
-        jacksyncData.setOperations(operations);
+        syncData.setOperations(operations);
     	// target checksum
-    	jacksyncData.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
+    	syncData.setTargetChecksum(ChecksumUtils.computeChecksum(mapper.writeValueAsString(targetPost)));
         
     	// server sync
-    	SyncObject<Post> syncPostV2 = syncProcessor.masterSync(new SyncObject<Post>(1L, clientPostV1), jacksyncData);
+    	SyncObject<Post> syncPostV2 = syncProcessor.masterSync(new SyncObject<Post>(1L, clientPostV1), syncData);
         
         Assert.assertThat(syncPostV2.getObject(), equalTo(targetPost));
     }

@@ -85,16 +85,16 @@ public class SyncObjectDiffMapper implements SyncDiffMapper {
         }
 		try {
 			List<PatchOperation> operations = objectDiffMapper.diff(source.getObject(), target.getObject());
-			SyncData jacksyncData = new SyncData();
-			jacksyncData.setVersion(source.getVersion());
-			jacksyncData.setMasterVersion(target.getVersion());
+			SyncData syncData = new SyncData();
+			syncData.setVersion(source.getVersion());
+			syncData.setMasterVersion(target.getVersion());
 			
 			if (isComputeChecksum) {
 				String targetJson = objectMapper.writeValueAsString(target);
-				jacksyncData.setTargetChecksum(ChecksumUtils.computeChecksum(targetJson));
+				syncData.setTargetChecksum(ChecksumUtils.computeChecksum(targetJson));
 			}
-			jacksyncData.setOperations(operations);
-			return jacksyncData;
+			syncData.setOperations(operations);
+			return syncData;
 		} catch (Exception e) {
 			throw new DiffProcessingException(e);
 		}

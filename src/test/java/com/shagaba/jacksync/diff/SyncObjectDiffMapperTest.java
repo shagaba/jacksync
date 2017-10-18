@@ -71,14 +71,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
 	}
@@ -94,14 +94,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -118,14 +118,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -142,14 +142,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -175,14 +175,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -208,14 +208,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -231,14 +231,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -254,14 +254,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -278,14 +278,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -304,14 +304,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -328,14 +328,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -361,14 +361,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -394,14 +394,14 @@ public class SyncObjectDiffMapperTest extends BaseTest {
 		JsonNode sourceJsonNode = mapper.valueToTree(postV1);
 		JsonNode targetJsonNode = mapper.valueToTree(postV1_1);
 	
-		SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
+		SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, postV1), new SyncObject<Post>(1L, postV1_1));
 		
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 		
-	    Assert.assertThat(jacksyncData.getOperations(), hasSize(1));
+	    Assert.assertThat(syncData.getOperations(), hasSize(1));
 	    Assert.assertThat(syncdJsonNode, equalTo(targetJsonNode));
 	    Assert.assertThat(mapper.treeToValue(syncdJsonNode, Post.class), equalTo(postV1_1));
     }
@@ -433,13 +433,13 @@ public class SyncObjectDiffMapperTest extends BaseTest {
     	target.getSections().add(new Section("section-3", null));
         target.getSections().add(new Section("section-4 update", null, "private note"));
 
-        SyncData jacksyncData = syncDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
+        SyncData syncData = syncDiffMapper.diff(new SyncObject<Post>(1L, source), new SyncObject<Post>(1L, target));
         
 		// operations simple diff
 		JsonNode sourceJsonNode = mapper.valueToTree(source);
 		JsonNode targetJsonNode = mapper.valueToTree(target);
 		JsonNode syncdJsonNode = sourceJsonNode.deepCopy();
-		for (PatchOperation operation : jacksyncData.getOperations()) {
+		for (PatchOperation operation : syncData.getOperations()) {
 			syncdJsonNode = operation.apply(syncdJsonNode);
 		}
 

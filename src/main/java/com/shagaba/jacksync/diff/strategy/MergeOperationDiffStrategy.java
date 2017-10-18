@@ -69,14 +69,13 @@ public class MergeOperationDiffStrategy implements DiffStrategy {
 	 * @return
 	 */
 	protected List<PatchOperation> optimize(JsonNode targetJsonNode, List<PatchOperation> operations) {
+		List<PatchOperation> optimizedOperations = new ArrayList<>();
 		Map<JsonPointer, JsonPointerData> parentToJsonPointerDataMap = new HashMap<>();
-		List<PatchOperation> arrayOperations = new ArrayList<>();
 		for (PatchOperation operation: operations) {
 			JsonNode pathJsonNode = JacksonUtils.locateHeadContainer(targetJsonNode, operation.getPath());
 			if (pathJsonNode.isObject()) {
 				if (operation.getClass() == RemoveOperation.class) {
-					// temp
-					arrayOperations.add(operation);
+					optimizedOperations.add(operation);
 				} else {
 					JsonPointer parentPointer = operation.getPath().head();
 					if (!parentToJsonPointerDataMap.containsKey(parentPointer)) {
@@ -86,13 +85,12 @@ public class MergeOperationDiffStrategy implements DiffStrategy {
 					parentToJsonPointerDataMap.get(parentPointer).getFieldNames().add(JacksonUtils.lastFieldName(operation.getPath()));
 				}
 			} else if (pathJsonNode.isArray()) {
-				arrayOperations.add(operation);
+				optimizedOperations.add(operation);
 			}
 		}
 		// merge process must start handling arrays  
-		List<PatchOperation> mergeOperations = arrayOperations;
-		mergeOperations.addAll(optimize(targetJsonNode, parentToJsonPointerDataMap));
-		return mergeOperations;
+		optimizedOperations.addAll(optimize(targetJsonNode, parentToJsonPointerDataMap));
+		return optimizedOperations;
 	}
 
 	/**
@@ -117,7 +115,7 @@ public class MergeOperationDiffStrategy implements DiffStrategy {
 			if (parentMergeOperation == null) {
 				parentToMergeOperation.put(mergeOperation.getPath(), mergeOperation);
 			} else {
-				JsonNode mergedJsonNode = JacksonUtils.merge(parentMergeOperation.getValue(), mergeOperation.getValue());
+				JsonNode mergedJsonNode = new MergeOperation(parentMergeOperation.getValue()).apply(mergeOperation.getValue());
 				parentMergeOperation.setValue(mergedJsonNode);
 			}
 		}

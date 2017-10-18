@@ -1,7 +1,6 @@
 package com.shagaba.jacksync.diff.strategy;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +25,7 @@ public class SimpleDiffStrategy implements DiffStrategy {
 	@Override
 	public List<PatchOperation> diff(JsonNode sourceJsonNode, JsonNode targetJsonNode) throws DiffProcessingException {
 		List<PatchOperation> operations = new ArrayList<>();
-		return diff(sourceJsonNode, targetJsonNode, operations, JsonPointer.compile("/"));
+		return diff(sourceJsonNode, targetJsonNode, operations, JsonPointer.compile(""));
 	}
 
 	/**
@@ -62,14 +61,10 @@ public class SimpleDiffStrategy implements DiffStrategy {
 	protected List<PatchOperation> diffArrays(JsonNode sourceJsonNode, JsonNode targetJsonNode, List<PatchOperation> patchOperations, JsonPointer path) {
 		if (sourceJsonNode.isArray() && targetJsonNode.isArray()) {
 			List<JsonNode> commonNodes = new ArrayList<>();
-			for (Iterator<JsonNode> iterator = sourceJsonNode.iterator(); iterator.hasNext();) {
-				commonNodes.add(iterator.next());
-			}
+			sourceJsonNode.iterator().forEachRemaining(commonNodes::add);
 			
 			List<JsonNode> targetNodes = new ArrayList<>();
-			for (Iterator<JsonNode> iterator = targetJsonNode.iterator(); iterator.hasNext();) {
-				targetNodes.add(iterator.next());
-			}
+			targetJsonNode.iterator().forEachRemaining(targetNodes::add);
 			
 			commonNodes.retainAll(targetNodes);
 			
@@ -118,23 +113,22 @@ public class SimpleDiffStrategy implements DiffStrategy {
 	protected List<PatchOperation> diffObjects(JsonNode sourceJsonNode, JsonNode targetJsonNode, List<PatchOperation> patchOperations, JsonPointer path) {
 		if (sourceJsonNode.isObject() &&  targetJsonNode.isObject()) {
 			// source iteration
-			for (Iterator<String> sourceFieldNames = sourceJsonNode.fieldNames(); sourceFieldNames.hasNext();) {
-				String fieldName = sourceFieldNames.next();
+			sourceJsonNode.fieldNames().forEachRemaining(fieldName -> {
 				JsonPointer fieldNamePath = JacksonUtils.append(path, fieldName);
 				if (targetJsonNode.has(fieldName)) {
 					diff(sourceJsonNode.path(fieldName), targetJsonNode.path(fieldName), patchOperations, fieldNamePath);
 				} else {
 					patchOperations.add(new RemoveOperation(fieldNamePath));
 				}
-			}
+			});
+
 			// target iteration
-			for (Iterator<String> targetFieldNames = targetJsonNode.fieldNames(); targetFieldNames.hasNext();) {
-				String fieldName = targetFieldNames.next();
+			targetJsonNode.fieldNames().forEachRemaining(fieldName -> {
 				if (!sourceJsonNode.has(fieldName)) {
 					JsonPointer fieldNamePath = JacksonUtils.append(path, fieldName);
 					patchOperations.add(new AddOperation(fieldNamePath, targetJsonNode.path(fieldName).deepCopy()));
 				}
-			}
+			});
 		}		
 		return patchOperations;
 	}

@@ -76,7 +76,7 @@ public class LocalSyncProcessor implements SyncProcessor {
 	 * @throws SyncException 
 	 */
 	protected <T> SyncObject<T> sync(SyncObject<T> sourceObject, SyncData syncData, Long targetVersion) throws SyncException {
-		// validate sourceObject version = jacksyncData version
+		// validate sourceObject version = syncData version
 		if (!Objects.equals(sourceObject.getVersion(), syncData.getVersion())) {
 			throw new InvalidSyncVersionException("Sync Version Mismatch");
 		}
@@ -89,7 +89,7 @@ public class LocalSyncProcessor implements SyncProcessor {
 				String targetJson = objectMapper.writeValueAsString(targetObject);
 				boolean isChecksumValid =  ChecksumUtils.verifyChecksum(targetJson, syncData.getTargetChecksum());
 				if (!isChecksumValid) {
-					throw new ChecksumMismatchException("Checksum on target does not match checksum on JacksyncData");
+					throw new ChecksumMismatchException("Checksum on target does not match checksum on syncData");
 				}
 			} catch (Exception e) {
 				throw new SyncProcessingException(e);
