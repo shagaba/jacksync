@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/shagaba/jacksync.svg?branch=master)](https://travis-ci.org/shagaba/jacksync)
 
-## Creating and applying sync patches (sync, merge, patch, diff)
+## Creating and applying sync patches (merge, patch, diff, sync)
 
 Jacksync provides a library for synchronization by producing and applying a JSON patches to Java objects. 
 Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) written in Java, which uses Jackson at its core.
@@ -12,9 +12,9 @@ Inspired by [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC
 * allows you to update a JSON document by sending the changes rather than the whole document.
 * [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) - add, remove, replace, move, copy, test.
 * [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) - merge patch document.
-* JSON "diff" with two optional strategies:
-  * simple - [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) operations.
-  * merge - using both [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) operations with a unique **merge operation** based on [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) that can minimize the amount of the operations and JSON document length.
+* JSON Diff computes the different between two Objects with two optional strategies:
+  * simple - (default) returns Json Patch operations based on [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902).
+  * merge - returns Json Patch operations using both [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) operations with a unique **merge operation** based on [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) that can minimize the amount of the operations and JSON document length.
 * enables simple commit and audit all JSON Patch changes in your data, and later on browse the detailed change history.
 * enables "reverse" patches using diff processor.
 
@@ -91,16 +91,20 @@ For example:
 * using the following Java code:
 
 ```java
-MergeProcessor mergeProcessor = new ObjectMergeProcessor(mapper);
+MergeProcessor mergeProcessor = new ObjectMergeProcessor(objectMapper);
 Post postV2 = mergeProcessor.merge(originalPostV1, value);
 ```
 
-### Diff
-TBD
+### JSON Diff
+Computes the different between two Objects source to target, and returns Json Patch operations.
+Two strategies to Compute the Json Patch operations:
+  * simple - (default) [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) operations.
+  * merge - using both [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) operations with a unique **merge operation** based on [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386) that can minimize the amount of the operations and JSON document length.
 
-
-
-
+```java
+DiffMapper diffMapper = new ObjectDiffMapper(objectMapper);
+List<PatchOperation> operations = diffMapper.diff(sourcePostV1, targetPostV2);
+```
 
 ### Sync Data Structure
 TBD
@@ -124,7 +128,7 @@ TBD
 }
 ```
 
-## Operations Inspired by RFC 6902 (JSON Patch) :
+## Operations implemented as described in RFC 6902 (JSON Patch) :
 
 **Add**
 
@@ -134,6 +138,7 @@ The "add" operation performs one of the following functions, depending upon what
 * If the target location specifies an object member that does not already exist, a new member is added to the object.
 * If the target location specifies an object member that does exist, that member's value is replaced.
 The operation object MUST contain a "value" member whose content specifies the value to be added.
+
 ```json
 {
 	"op" : "add", 
@@ -147,6 +152,7 @@ The operation object MUST contain a "value" member whose content specifies the v
 The "remove" operation removes the value at the target location.
 The target location MUST exist for the operation to be successful.
 If removing an element from an array, any elements above the specified index are shifted one position to the left.
+
 ```json
 {
 	"op" : "remove",
@@ -160,6 +166,7 @@ The "replace" operation replaces the value at the target location with a new val
 The operation object MUST contain a "value" member whose content specifies the replacement value.
 The target location MUST exist for the operation to be successful.
 This operation is functionally identical to a "remove" operation for a value, followed immediately by an "add" operation at the same location with the replacement value.
+
 ```json
 { 
 	"op" : "replace", 
@@ -178,6 +185,7 @@ The operation object MUST contain a "from" member, which is a string containing 
 The "from" location MUST exist for the operation to be successful.
 This operation is functionally identical to a "remove" operation on the "from" location, followed immediately by an "add" operation at the target location with the value that was just removed.
 The "from" location MUST NOT be a proper prefix of the "path" location, a location cannot be moved into one of its children.
+
 ```json
 {
 	"op" : "move", 
@@ -192,6 +200,7 @@ The "copy" operation copies the value at a specified location to the target loca
 The operation object MUST contain a "from" member, which is a string containing a JSON Pointer value that references the location in the target document to copy the value from.
 The "from" location MUST exist for the operation to be successful.
 This operation is functionally identical to an "add" operation at the target location using the value specified in the "from" member.
+
 ```json
 {
 	"op" : "copy", 
@@ -211,6 +220,7 @@ Here, "equal" means that the value at the target location and the value conveyed
 * arrays: are considered equal if they contain the same number of values, and if each value can be considered equal to the value at the corresponding position in the other array, using this list of type-specific rules.
 * objects: are considered equal if they contain the same number of members, and if each member can be considered equal to a member in the other object, by comparing their keys (as strings) and their values (using this list of type-specific rules).
 * literals (false, true, and null): are considered equal if they are the same.
+
 ```json
 {
 	"op" : "test", 
@@ -223,8 +233,8 @@ Here, "equal" means that the value at the target location and the value conveyed
 
 **Merge**
 
-The "merge" operation merge a JSON merge patch document value at the target location value.
-The "merge" operation is unique to Jacksync project inspired by both RFC 6902 (JSON Patch) and RFC 7386 (JSON Merge Patch).
+The "merge" operation merge a JSON Merge Patch document value at the target location value.
+The "merge" operation is unique to Jacksync project inspired by both [RFC 6902 (JSON Patch)](http://tools.ietf.org/html/rfc6902) and [RFC 7386 (JSON Merge Patch)](http://tools.ietf.org/html/rfc7386).
 The operation object MUST contain a "value" member which is a JSON merge patch document.
 The target location MUST exist for the operation to be successful.
 A JSON merge patch document describes changes to be made to a target JSON document using a syntax that closely mimics the document being modified.
@@ -232,6 +242,7 @@ A JSON merge patch document describes changes to be made to a target JSON docume
 * If the provided merge patch contains members that do not appear within the target, those members are added.
 * If the target does contain the member, the value is replaced.
 * Null values in the merge patch are given special meaning to indicate the removal of existing values in the target.
+
 ```json
 {
 	"op" : "merge", 
